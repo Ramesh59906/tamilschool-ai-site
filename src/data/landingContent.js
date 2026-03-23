@@ -10,7 +10,7 @@ export const NAV_LINKS = [
 ]
 
 export const NAV_AUTH = [
-  { label: 'Admin Login', href: '#', variant: 'link' },
+  { label: 'Admin Login', href: '/admin-login', variant: 'link' },
   { label: 'Request access', href: '#', variant: 'cta' },
 ]
 

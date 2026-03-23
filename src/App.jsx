@@ -8,8 +8,13 @@ import VocabularySection from './components/VocabularySection'
 import TestimonialsSection from './components/TestimonialsSection'
 import SafetySection from './components/SafetySection'
 import SiteFooter from './components/SiteFooter'
+import AdminLoginPage from './components/AdminLoginPage'
 
 function App() {
+  if (window.location.pathname === '/admin-login') {
+    return <AdminLoginPage />
+  }
+
   return (
     <div className="flex min-h-svh flex-col">
       <SiteHeader />

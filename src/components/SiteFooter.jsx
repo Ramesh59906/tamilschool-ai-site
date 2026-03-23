@@ -38,7 +38,7 @@ const FOOTER_LINKS = [
   {
     title: 'COMPANY',
     links: [
-      { label: 'Admin Login', href: '#' },
+      { label: 'Admin Login', href: '/admin-login' },
       { label: 'Sign up', href: '#' },
       { label: 'Forgot password', href: '#' },
       { label: 'Contact', href: '#' },
@@ -71,7 +71,7 @@ export default function SiteFooter() {
           </div>
           <div className="flex flex-col items-center gap-4 sm:flex-row">
             <a
-              href="#"
+              href="/admin-login"
               className="inline-flex h-[3.2rem] items-center justify-center rounded-[10px] bg-sky-500 px-8 text-base font-bold text-white shadow-lg shadow-sky-500/30 transition-all duration-300 hover:-translate-y-1 hover:bg-sky-400 hover:shadow-sky-500/40"
             >
               Admin Login

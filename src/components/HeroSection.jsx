@@ -24,7 +24,7 @@ export default function HeroSection() {
           </p>
           <div className="mb-8 flex flex-wrap gap-4 max-lg:justify-center">
             <a
-              href="#"
+              href="/admin-login"
               className="group relative inline-flex items-center justify-center overflow-hidden rounded-full bg-gradient-to-r from-blue-500 via-indigo-500 to-blue-500 bg-[length:200%_auto] px-8 py-3.5 text-base font-bold text-white shadow-[0_0_20px_rgba(59,130,246,0.4)] transition-all ease-out duration-300 hover:scale-105 hover:shadow-[0_0_30px_rgba(59,130,246,0.7)] animate-[gradientBg_3s_linear_infinite]"
             >
               <span className="absolute inset-0 bg-white/10 opacity-0 transition-opacity group-hover:opacity-100"></span>
