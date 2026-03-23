@@ -1,36 +1,20 @@
-import SiteHeader from './components/SiteHeader'
-import HeroSection from './components/HeroSection'
-import HowItWorksSection from './components/HowItWorksSection'
-import ModulesSection from './components/ModulesSection'
-import AnalyticsSection from './components/AnalyticsSection'
-import TeachersSection from './components/TeachersSection'
-import VocabularySection from './components/VocabularySection'
-import TestimonialsSection from './components/TestimonialsSection'
-import SafetySection from './components/SafetySection'
-import SiteFooter from './components/SiteFooter'
-import AdminLoginPage from './components/AdminLoginPage'
+import { Routes, Route } from 'react-router-dom'
+import ScrollToHash from './components/ScrollToHash'
+import HomePage from './pages/HomePage'
+import AdminLoginPage from './pages/AdminLoginPage'
+import SignUpPage from './pages/SignUpPage'
+import ForgotPasswordPage from './pages/ForgotPasswordPage'
 
-function App() {
-  if (window.location.pathname === '/admin-login') {
-    return <AdminLoginPage />
-  }
-
+export default function App() {
   return (
-    <div className="flex min-h-svh flex-col">
-      <SiteHeader />
-      <main className="grow">
-        <HeroSection />
-        <HowItWorksSection />
-        <ModulesSection />
-        <AnalyticsSection />
-        <TeachersSection />
-        <VocabularySection />
-        <TestimonialsSection />
-        <SafetySection />
-      </main>
-      <SiteFooter />
-    </div>
+    <>
+      <ScrollToHash />
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/admin-login" element={<AdminLoginPage />} />
+        <Route path="/register" element={<SignUpPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+      </Routes>
+    </>
   )
 }
-
-export default App

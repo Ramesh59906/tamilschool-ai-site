@@ -1,0 +1,25 @@
+@keyframes blob-drift {
+  0%, 100% { transform: translate(0, 0) scale(1); border-radius: 60% 40% 55% 45% / 50% 55% 45% 50%; }
+  33% { transform: translate(18px, -14px) scale(1.06); border-radius: 45% 55% 40% 60% / 55% 45% 60% 40%; }
+  66% { transform: translate(-12px, 10px) scale(0.97); border-radius: 50% 50% 60% 40% / 40% 60% 50% 55%; }
+}
+
+@keyframes blob-drift2 {
+  0%, 100% { transform: translate(0, 0) scale(1); border-radius: 42% 58% 62% 38% / 50% 40% 60% 50%; }
+  40% { transform: translate(-20px, 16px) scale(1.08); border-radius: 55% 45% 45% 55% / 60% 50% 45% 40%; }
+  75% { transform: translate(14px, -10px) scale(0.95); border-radius: 38% 62% 55% 45% / 45% 55% 40% 60%; }
+}
+
+@keyframes blob-pulse {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.1); }
+}
+
+@keyframes illus-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+
+.auth-illus-float {
+  animation: illus-float 4s ease-in-out infinite;
+}

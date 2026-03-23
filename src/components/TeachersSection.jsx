@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { TEACHERS } from '../data/landingContent'
 import Container from './Container'
 
@@ -94,13 +95,13 @@ export default function TeachersSection() {
               </ul>
               
               <div className="mt-2 animate-[slideUpFade_0.8s_ease-out_both]" style={{ animationDelay: '800ms' }}>
-                <a
-                  href="#"
+                <Link
+                  to="/register"
                   className="group relative inline-flex items-center justify-center overflow-hidden rounded-full bg-gradient-to-r from-indigo-600 via-rose-500 to-indigo-600 bg-[length:200%_auto] px-10 py-4 text-[1.05rem] font-bold text-white shadow-[0_0_20px_rgba(99,102,241,0.4)] transition-all ease-out duration-300 hover:scale-105 hover:shadow-[0_0_30px_rgba(99,102,241,0.6)] animate-[gradientBg_3s_linear_infinite]"
                 >
                   <span className="absolute inset-0 bg-white/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></span>
                   <span className="relative z-10 tracking-wide">{TEACHERS.cta}</span>
-                </a>
+                </Link>
               </div>
             </div>
           </div>

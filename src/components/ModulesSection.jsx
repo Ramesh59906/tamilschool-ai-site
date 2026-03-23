@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { CORE_MODULES } from '../data/landingContent'
 import Container from './Container'
 import ModuleIcon from './ModuleIcon'
@@ -108,13 +109,13 @@ export default function ModulesSection() {
         </div>
 
         <div className="mt-14 text-center animate-[slideUpFade_0.8s_ease-out_both]" style={{ animationDelay: '600ms' }}>
-          <a
-            href="#"
+          <Link
+            to="/register"
             className="group relative inline-flex items-center justify-center overflow-hidden rounded-full bg-gradient-to-r from-violet-500 via-fuchsia-500 to-violet-500 bg-[length:200%_auto] px-9 py-4 text-[1.05rem] font-bold text-white shadow-[0_0_20px_rgba(168,85,247,0.4)] transition-all ease-out duration-300 hover:scale-105 hover:shadow-[0_0_30px_rgba(168,85,247,0.7)] animate-[gradientBg_3s_linear_infinite]"
           >
             <span className="absolute inset-0 bg-white/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></span>
             <span className="relative z-10 tracking-wide">{CORE_MODULES.cta}</span>
-          </a>
+          </Link>
         </div>
       </Container>
     </section>
