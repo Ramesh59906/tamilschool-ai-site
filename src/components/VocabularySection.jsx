@@ -1,101 +1,42 @@
+import { useEffect, useRef } from 'react'
 import { VOCABULARY } from '../data/landingContent'
 import Container from './Container'
 
-const gameIcons = [
-  { icon: '🧩', left: '10%', delay: '0s', duration: '28s', size: '3.5rem', rotate: '15deg', color: 'text-indigo-500' },
-  { icon: '🎲', left: '25%', delay: '-5s', duration: '25s', size: '3rem', rotate: '-10deg', color: 'text-fuchsia-500' },
-  { icon: '🃏', left: '40%', delay: '-12s', duration: '30s', size: '3.5rem', rotate: '25deg', color: 'text-cyan-500' },
-  { icon: '🎯', left: '55%', delay: '-2s', duration: '22s', size: '3rem', rotate: '5deg', color: 'text-rose-400' },
-  { icon: '🎮', left: '70%', delay: '-18s', duration: '26s', size: '3rem', rotate: '-15deg', color: 'text-violet-500' },
-  { icon: '🧠', left: '85%', delay: '-8s', duration: '24s', size: '4rem', rotate: '10deg', color: 'text-pink-500' },
-  { icon: '🕹️', left: '15%', delay: '-15s', duration: '32s', size: '2.5rem', rotate: '45deg', color: 'text-indigo-400' },
-  { icon: '🏆', left: '80%', delay: '-10s', duration: '21s', size: '2.5rem', rotate: '45deg', color: 'text-amber-500' },
-];
-
-// Map specific playful icons to the vocabulary tabs
-const TabIcons = {
-  'Dictionary': '📖',
-  'Flashcards': '🃏',
-  'Word of the day': '🌟'
-}
+const TAB_THEMES = [
+  { icon: <svg className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5"><path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" /></svg>, accent: 'bg-logo-blue/10 text-logo-blue ring-logo-blue/20', hover: 'group-hover:border-logo-blue/40' },
+  { icon: <svg className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5"><path strokeLinecap="round" strokeLinejoin="round" d="M6.429 9.75L2.25 12l4.179 2.25m0-4.5l5.571 3 5.571-3m-11.142 0L2.25 7.5 12 2.25l9.75 5.25-4.179 2.25m0 0L21.75 12l-4.179 2.25m0 0L12 17.25 6.43 14.25m11.142 0l4.179 2.25L12 21.75l-9.75-5.25 4.179-2.25" /></svg>, accent: 'bg-logo-orange/10 text-logo-orange ring-logo-orange/20', hover: 'group-hover:border-logo-orange/40' },
+  { icon: <svg className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5"><path strokeLinecap="round" strokeLinejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 001.5-.189m-1.5.189a6.01 6.01 0 01-1.5-.189m3.75 7.478a12.06 12.06 0 01-4.5 0m3.75 2.383a14.406 14.406 0 01-3 0M14.25 18v-.192c0-.983.658-1.823 1.508-2.316a7.5 7.5 0 10-7.517 0c.85.493 1.509 1.333 1.509 2.316V18" /></svg>, accent: 'bg-logo-green/10 text-logo-green ring-logo-green/20', hover: 'group-hover:border-logo-green/40' },
+]
 
 export default function VocabularySection() {
+  const headRef = useRef(null)
+  const cardRefs = useRef([])
+  useEffect(() => {
+    const els = [headRef.current, ...cardRefs.current].filter(Boolean)
+    const obs = new IntersectionObserver((entries) => entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target) } }), { threshold: 0.15 })
+    els.forEach((el) => obs.observe(el))
+    return () => obs.disconnect()
+  }, [])
+
   return (
-    <section
-      className="relative overflow-hidden bg-gradient-to-br from-cyan-50 via-indigo-50 to-fuchsia-50 py-16 md:py-[5.5rem]"
-      id="vocabulary"
-      aria-labelledby="vocabulary-heading"
-    >
-      {/* Magical Ambient Background */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
-        {/* Soft floating orbs */}
-        <div className="absolute -top-[10%] -left-[10%] w-[50%] h-[50%] rounded-full bg-cyan-300/20 blur-[100px] animate-[blob_13s_infinite_ease-in-out]"></div>
-        <div className="absolute top-[30%] -right-[10%] w-[45%] h-[45%] rounded-full bg-fuchsia-300/15 blur-[120px] animate-[blob_15s_infinite_ease-in-out]" style={{ animationDelay: '3s' }}></div>
-        <div className="absolute -bottom-[20%] left-[20%] w-[60%] h-[60%] rounded-full bg-indigo-300/20 blur-[110px] animate-[blob_18s_infinite_ease-in-out]" style={{ animationDelay: '6s' }}></div>
-        
-        {/* Animated wave pattern overlay */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(0,0,0,0.03)_1px,transparent_0)] bg-[length:24px_24px] [mask-image:radial-gradient(ellipse_70%_60%_at_50%_50%,#000_80%,transparent_100%)]"></div>
-
-        {/* Floating Game Icons */}
-        {gameIcons.map((item, i) => (
-          <div 
-             key={i} 
-             className={`absolute animate-[floatUp_infinite_linear] opacity-25 select-none drop-shadow-md ${item.color}`}
-             style={{
-               left: item.left,
-               animationDuration: item.duration,
-               animationDelay: item.delay,
-             }}
-             aria-hidden="true"
-          >
-            <div style={{ transform: `rotate(${item.rotate})`, fontSize: item.size }}>
-              {item.icon}
-            </div>
-          </div>
-        ))}
-      </div>
-
+    <section className="relative overflow-hidden bg-surface-alt py-14 sm:py-20 md:py-28" id="vocabulary" aria-labelledby="vocabulary-heading">
       <Container className="relative z-10">
-        <div className="mx-auto max-w-2xl text-center mb-12 lg:mb-16 animate-[slideUpFade_0.8s_ease-out_both]">
-          <h2
-            id="vocabulary-heading"
-            className="mb-4 text-4xl font-extrabold tracking-tight text-slate-900 md:text-[2.6rem]"
-          >
-            {VOCABULARY.title}
-          </h2>
-          <p className="text-lg leading-relaxed text-slate-600">
-            {VOCABULARY.subtitle}
-          </p>
+        <div ref={headRef} className="reveal mx-auto mb-10 max-w-2xl text-center sm:mb-16">
+          <span className="mb-3 inline-block rounded-full bg-emerald-100 px-3 py-1 text-[0.7rem] font-bold uppercase tracking-widest text-emerald-700 sm:px-4 sm:py-1.5 sm:text-[0.75rem]">Interactive Learning</span>
+          <h2 id="vocabulary-heading" className="mb-3 font-display text-2xl font-extrabold tracking-tight text-slate-900 sm:mb-4 sm:text-3xl md:text-4xl">{VOCABULARY.title}</h2>
+          <p className="text-base text-slate-500 sm:text-lg">{VOCABULARY.subtitle}</p>
         </div>
-
-        <div className="mx-auto grid max-w-5xl grid-cols-1 gap-6 md:grid-cols-3">
-          {VOCABULARY.tabs.map((tab, idx) => (
-            <div 
-              key={tab.label}
-              className="animate-[slideUpFade_0.8s_ease-out_both]"
-              style={{ animationDelay: `${idx * 150 + 200}ms` }}
-            >
-              <article
-                className="group relative h-full overflow-hidden rounded-[24px] border border-white/80 bg-white/60 p-8 shadow-[0_8px_30px_rgba(0,0,0,0.04)] backdrop-blur-xl transition-all duration-500 hover:-translate-y-3 hover:bg-white hover:shadow-[0_20px_40px_rgba(99,102,241,0.15)] hover:border-indigo-200"
-              >
-                {/* Subtle inner hover glow */}
-                <div className="absolute -inset-0 rounded-[24px] bg-gradient-to-br from-cyan-500/5 to-indigo-500/10 opacity-0 transition-opacity duration-500 group-hover:opacity-100 pointer-events-none"></div>
-
-                <div className="relative z-10 mb-5 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-50 to-cyan-50 shadow-inner ring-1 ring-indigo-100/60 transition-transform duration-500 group-hover:scale-110 group-hover:-rotate-[10deg] group-hover:bg-gradient-to-br group-hover:from-cyan-100 group-hover:to-indigo-100">
-                  <span className="text-3xl drop-shadow-sm transition-transform group-hover:scale-110">
-                    {TabIcons[tab.label] || '🎮'}
-                  </span>
-                </div>
-
-                <h3 className="relative z-10 mb-3 text-[1.25rem] font-bold text-slate-800 transition-colors duration-300 group-hover:text-indigo-600">
-                  {tab.label}
-                </h3>
-                <p className="relative z-10 m-0 text-[0.95rem] leading-relaxed text-slate-500 group-hover:text-slate-600">
-                  {tab.text}
-                </p>
+        <div className="mx-auto grid max-w-5xl grid-cols-1 gap-4 sm:gap-6 md:grid-cols-3">
+          {VOCABULARY.tabs.map((tab, idx) => {
+            const theme = TAB_THEMES[idx]
+            return (
+              <article key={tab.label} ref={(el) => { cardRefs.current[idx] = el }} className={`reveal aios-card group relative flex h-full flex-col overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-6 transition-all duration-500 hover:-translate-y-2 hover:shadow-xl hover:shadow-slate-900/5 sm:rounded-3xl sm:p-8 ${theme.hover}`} style={{ transitionDelay: `${idx * 120}ms` }}>
+                <div className={`mb-6 inline-flex h-14 w-14 items-center justify-center rounded-2xl ring-1 transition-transform duration-300 group-hover:scale-110 ${theme.accent}`}>{theme.icon}</div>
+                <h3 className="mb-3 font-display text-xl font-bold text-slate-900">{tab.label}</h3>
+                <p className="text-[0.92rem] leading-relaxed text-slate-500">{tab.text}</p>
               </article>
-            </div>
-          ))}
+            )
+          })}
         </div>
       </Container>
     </section>

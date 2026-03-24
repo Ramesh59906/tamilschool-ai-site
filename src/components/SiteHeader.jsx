@@ -3,86 +3,78 @@ import { Link } from 'react-router-dom'
 import { NAV_AUTH, NAV_LINKS } from '../data/landingContent'
 import Container from './Container'
 
-function ThemeToggleDecor() {
-  return (
-    <button
-      type="button"
-      className="hidden sm:flex h-10 w-10 items-center justify-center rounded-lg text-slate-300 transition-colors hover:bg-white/10 hover:text-white"
-      aria-label="Toggle theme (preview)"
-      title="Theme"
-    >
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="2" />
-        <path
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"
-        />
-      </svg>
-    </button>
-  )
-}
-
-function NavLink({ href, children, onClick, className }) {
+function NavLink({ href, children, onClick, className, style }) {
   const isInternal = href.startsWith('/') || href.startsWith('#')
   if (!isInternal) {
-    return <a href={href} className={className} target="_blank" rel="noreferrer">{children}</a>
+    return <a href={href} className={className} style={style} target="_blank" rel="noreferrer">{children}</a>
   }
-  return <Link to={href === '#' ? '/' : href} onClick={onClick} className={className}>{children}</Link>
+  return <Link to={href === '#' ? '/' : href} onClick={onClick} className={className} style={style}>{children}</Link>
 }
 
 export default function SiteHeader() {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [open, setOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
 
   useEffect(() => {
-    document.body.style.overflow = isMobileMenuOpen ? 'hidden' : 'unset'
-    return () => { document.body.style.overflow = 'unset' }
-  }, [isMobileMenuOpen])
+    const onScroll = () => setScrolled(window.scrollY > 20)
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
+  useEffect(() => {
+    document.body.style.overflow = open ? 'hidden' : ''
+    return () => { document.body.style.overflow = '' }
+  }, [open])
 
   return (
     <>
-      <header className="sticky top-0 z-50 border-b border-slate-700/40 bg-gradient-to-b from-slate-900 to-slate-800 shadow-[0_8px_32px_rgba(0,0,0,0.25)] relative">
-        <Container className="flex items-center justify-between py-3">
-          <Link className="flex shrink-0 items-center gap-2.5 no-underline hover:opacity-95 z-50 relative" to="/">
+      <header
+        className={`sticky top-0 z-50 border-b transition-all duration-500 ${
+          scrolled
+            ? 'border-tkm-800/50 bg-tkm-950/95 shadow-xl shadow-tkm-950/30 backdrop-blur-2xl'
+            : 'border-tkm-800/30 bg-tkm-950'
+        }`}
+      >
+        <Container className="flex items-center justify-between gap-4 py-2 sm:py-2.5">
+          {/* Logo */}
+          <Link className="group relative z-50 flex shrink-0 items-center gap-2 no-underline sm:gap-2.5" to="/">
             <img
               src="/images/tkm-logo.png"
-              alt="Tamil Katral Maiyam Logo"
-              className="h-11 w-11 shrink-0 rounded-full bg-white shadow-[0_0_0_2px_rgba(255,255,255,0.15),0_6px_20px_rgba(0,0,0,0.35)] object-cover"
+              alt="TKM Logo"
+              className="h-10 w-10 shrink-0 rounded-full bg-white object-cover shadow-md shadow-tkm-950/20 sm:h-11 sm:w-11"
             />
             <span className="flex flex-col leading-tight">
-              <span className="text-base font-extrabold tracking-tight text-white">
+              <span className="font-display text-[0.8rem] font-bold tracking-tight text-white sm:text-[0.9rem]">
                 Tamil Katral Maiyam
               </span>
-              <span className="font-tamil text-xs font-semibold text-slate-300" lang="ta">
+              <span className="font-tamil text-[0.6rem] font-medium text-tkm-300/80 sm:text-[0.65rem]" lang="ta">
                 தமிழ் கற்றல் மையம்
               </span>
             </span>
           </Link>
 
-          <nav
-            className="hidden xl:flex flex-1 justify-center gap-x-1 lg:gap-x-3 text-[0.85rem] font-medium"
-            aria-label="Primary"
-          >
+          {/* Desktop nav */}
+          <nav className="hidden xl:flex items-center gap-x-0.5" aria-label="Primary">
             {NAV_LINKS.map((item) => (
               <NavLink
                 key={item.href}
                 href={item.href}
-                className="rounded-lg px-2 lg:px-3 py-2 text-slate-100/90 no-underline transition-colors hover:bg-white/10 hover:text-white whitespace-nowrap"
+                className="rounded-lg px-3 py-2 text-[0.82rem] font-medium text-tkm-200/80 no-underline transition-all duration-200 hover:bg-white/8 hover:text-white whitespace-nowrap"
               >
                 {item.label}
               </NavLink>
             ))}
           </nav>
 
-          <div className="hidden xl:flex shrink-0 items-center gap-2">
-            <ThemeToggleDecor />
+          {/* Desktop auth */}
+          <div className="hidden xl:flex shrink-0 items-center gap-2.5">
             {NAV_AUTH.map((item) =>
               item.variant === 'cta' ? (
                 <NavLink
                   key={item.label}
                   href={item.href}
-                  className="rounded-full flex items-center bg-blue-600 px-5 h-[2.6rem] text-[0.85rem] font-bold tracking-wide text-white no-underline shadow-[0_4px_16px_rgba(37,99,235,0.45)] transition-all hover:-translate-y-0.5 hover:bg-blue-500 hover:shadow-[0_6px_20px_rgba(37,99,235,0.6)] hover:no-underline"
+                  className="flex items-center rounded-full px-5 py-2 text-[0.82rem] font-bold text-white no-underline shadow-lg shadow-logo-orange/20 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-logo-orange/30"
+                  style={{ background: 'linear-gradient(135deg, #f7941d, #e8363a)' }}
                 >
                   {item.label}
                 </NavLink>
@@ -90,7 +82,7 @@ export default function SiteHeader() {
                 <NavLink
                   key={item.label}
                   href={item.href}
-                  className="px-4 py-2 flex items-center h-[2.6rem] text-[0.9rem] font-bold text-sky-400 no-underline transition-colors hover:text-sky-300 hover:no-underline"
+                  className="px-3 py-2 text-[0.82rem] font-semibold text-tkm-200/80 no-underline transition-colors hover:text-white"
                 >
                   {item.label}
                 </NavLink>
@@ -98,49 +90,47 @@ export default function SiteHeader() {
             )}
           </div>
 
-          <div className="flex xl:hidden items-center z-50 relative ml-auto">
+          {/* Mobile controls */}
+          <div className="flex xl:hidden items-center gap-2 relative z-50">
             <Link
               to="/admin-login"
-              className="mr-3 text-[0.85rem] font-bold text-sky-400 no-underline transition-colors hover:text-sky-300"
+              className="text-[0.8rem] font-bold text-accent-400 no-underline transition-colors hover:text-accent-300"
             >
               Log in
             </Link>
             <button
               type="button"
-              className="group flex h-10 w-10 flex-col items-center justify-center gap-[5px] rounded-lg text-slate-200 transition-colors hover:bg-white/10"
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              aria-expanded={isMobileMenuOpen}
+              className="flex h-9 w-9 flex-col items-center justify-center gap-[5px] rounded-lg text-white/80 transition-colors hover:bg-white/10"
+              onClick={() => setOpen(!open)}
+              aria-expanded={open}
             >
               <span className="sr-only">Toggle menu</span>
-              <span className={`h-0.5 w-6 rounded-full bg-current transition-all duration-300 ease-in-out ${isMobileMenuOpen ? 'translate-y-[7px] rotate-45' : ''}`} />
-              <span className={`h-0.5 w-6 rounded-full bg-current transition-all duration-300 ease-in-out ${isMobileMenuOpen ? 'opacity-0' : ''}`} />
-              <span className={`h-0.5 w-6 rounded-full bg-current transition-all duration-300 ease-in-out ${isMobileMenuOpen ? '-translate-y-[7px] -rotate-45' : ''}`} />
+              <span className={`h-0.5 w-5 rounded-full bg-current transition-all duration-300 ${open ? 'translate-y-[7px] rotate-45' : ''}`} />
+              <span className={`h-0.5 w-5 rounded-full bg-current transition-all duration-300 ${open ? 'opacity-0' : ''}`} />
+              <span className={`h-0.5 w-5 rounded-full bg-current transition-all duration-300 ${open ? '-translate-y-[7px] -rotate-45' : ''}`} />
             </button>
           </div>
         </Container>
       </header>
 
+      {/* Mobile overlay */}
       <div
-        className={`fixed inset-0 z-40 bg-slate-900/95 backdrop-blur-xl transition-all duration-500 ease-in-out xl:hidden ${
-          isMobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+        className={`fixed inset-0 z-40 bg-tkm-950/98 backdrop-blur-2xl transition-all duration-500 xl:hidden ${
+          open ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
         }`}
       >
-        <div
-          className={`flex h-full flex-col justify-center px-8 transition-transform duration-500 ease-out ${
-            isMobileMenuOpen ? 'translate-y-0 scale-100' : '-translate-y-6 scale-[0.98]'
-          }`}
-        >
-          <nav className="flex w-full flex-col gap-6 text-center">
+        <div className="flex h-full flex-col overflow-y-auto overscroll-contain pt-20 pb-10 px-6">
+          <nav className="flex w-full flex-col items-center gap-4 text-center my-auto">
             {NAV_LINKS.map((item, idx) => (
               <NavLink
                 key={item.href}
                 href={item.href}
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="text-2xl font-bold tracking-wide text-slate-100 transition-all hover:text-sky-400 hover:scale-105"
+                onClick={() => setOpen(false)}
+                className="font-display text-xl font-bold text-white/90 transition-all hover:text-accent-400 sm:text-2xl"
                 style={{
-                  transitionDelay: isMobileMenuOpen ? `${idx * 50 + 100}ms` : '0ms',
-                  opacity: isMobileMenuOpen ? 1 : 0,
-                  transform: isMobileMenuOpen ? 'translateY(0)' : 'translateY(20px)',
+                  transitionDelay: open ? `${idx * 40 + 80}ms` : '0ms',
+                  opacity: open ? 1 : 0,
+                  transform: open ? 'translateY(0)' : 'translateY(16px)',
                   transition: 'all 0.5s cubic-bezier(0.16, 1, 0.3, 1)',
                 }}
               >
@@ -149,11 +139,10 @@ export default function SiteHeader() {
             ))}
 
             <div
-              className="mx-auto mt-6 flex w-full max-w-sm flex-col gap-4 border-t border-slate-700/50 pt-8"
+              className="mt-6 flex w-full max-w-xs flex-col gap-3 border-t border-tkm-800 pt-6"
               style={{
-                transitionDelay: isMobileMenuOpen ? `${NAV_LINKS.length * 50 + 200}ms` : '0ms',
-                opacity: isMobileMenuOpen ? 1 : 0,
-                transform: isMobileMenuOpen ? 'translateY(0)' : 'translateY(20px)',
+                transitionDelay: open ? `${NAV_LINKS.length * 40 + 160}ms` : '0ms',
+                opacity: open ? 1 : 0,
                 transition: 'all 0.5s cubic-bezier(0.16, 1, 0.3, 1)',
               }}
             >
@@ -162,8 +151,9 @@ export default function SiteHeader() {
                   <NavLink
                     key={item.label}
                     href={item.href}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="flex w-full items-center justify-center rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 py-4 text-[1.1rem] font-bold text-white shadow-lg shadow-blue-500/30 transition-all active:scale-95"
+                    onClick={() => setOpen(false)}
+                    className="w-full rounded-xl py-3.5 text-center font-display text-sm font-bold text-white shadow-lg sm:text-base"
+                    style={{ background: 'linear-gradient(135deg, #f7941d, #e8363a)' }}
                   >
                     {item.label}
                   </NavLink>
@@ -171,8 +161,8 @@ export default function SiteHeader() {
                   <NavLink
                     key={item.label}
                     href={item.href}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="flex w-full items-center justify-center rounded-xl border-[1.5px] border-slate-600 bg-slate-800/50 py-3.5 text-[1.05rem] font-bold text-sky-400 transition-all active:scale-95"
+                    onClick={() => setOpen(false)}
+                    className="w-full rounded-xl border border-tkm-700 bg-tkm-900/50 py-3 text-center font-display text-sm font-bold text-tkm-200 sm:text-base"
                   >
                     {item.label}
                   </NavLink>

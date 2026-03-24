@@ -2,95 +2,121 @@ import { Link } from 'react-router-dom'
 import { HERO } from '../data/landingContent'
 import Container from './Container'
 import AnimatedBackground from './AnimatedBackground'
+import useReveal from '../hooks/useReveal'
 
 export default function HeroSection() {
+  const revealRef = useReveal(0.1)
+
   return (
     <>
       <section
-        className="relative flex min-h-[min(92vh,820px)] flex-col justify-center overflow-hidden text-white"
-      aria-labelledby="hero-heading"
-    >
-      <AnimatedBackground />
-
-      <Container className="relative z-[1] py-16 pb-36 sm:py-20 lg:py-24 flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-8">
-        <div className="w-full max-w-xl max-lg:mx-auto max-lg:text-center z-10 shrink-0">
-          <h1
-            id="hero-heading"
-            className="mb-4 text-4xl font-extrabold leading-[1.08] tracking-tight text-white sm:text-5xl lg:text-[3.35rem] [text-shadow:0_2px_40px_rgba(0,0,0,0.45)]"
-          >
-            {HERO.title}
-          </h1>
-          <p className="mb-8 max-w-[36ch] text-lg font-medium leading-snug text-slate-100 max-lg:mx-auto lg:text-xl [text-shadow:0_1px_24px_rgba(0,0,0,0.4)]">
-            {HERO.subtitle}
-          </p>
-          <div className="mb-8 flex flex-wrap gap-4 max-lg:justify-center">
-            <Link
-              to="/admin-login"
-              className="group relative inline-flex items-center justify-center overflow-hidden rounded-full bg-gradient-to-r from-blue-500 via-indigo-500 to-blue-500 bg-[length:200%_auto] px-8 py-3.5 text-base font-bold text-white shadow-[0_0_20px_rgba(59,130,246,0.4)] transition-all ease-out duration-300 hover:scale-105 hover:shadow-[0_0_30px_rgba(59,130,246,0.7)] animate-[gradientBg_3s_linear_infinite]"
-            >
-              <span className="absolute inset-0 bg-white/10 opacity-0 transition-opacity group-hover:opacity-100"></span>
-              <span className="relative z-10">{HERO.ctaLogin}</span>
-            </Link>
-            <Link
-              to="/register"
-              className="group relative inline-flex items-center justify-center overflow-hidden rounded-full bg-gradient-to-r from-pink-500 via-orange-500 to-pink-500 bg-[length:200%_auto] px-8 py-3.5 text-base font-bold text-white shadow-[0_0_20px_rgba(236,72,153,0.4)] transition-all ease-out duration-300 hover:scale-105 hover:shadow-[0_0_30px_rgba(236,72,153,0.7)] animate-[gradientBg_3s_linear_infinite] hover:animate-[gradientBg_1.5s_linear_infinite]"
-            >
-              <span className="absolute inset-0 bg-white/10 opacity-0 transition-opacity group-hover:opacity-100"></span>
-              <span className="relative z-10">{HERO.ctaRequest}</span>
-            </Link>
-          </div>
-        </div>
-
-        {/* Hero Illustration (Animated with Soft Blended Edges & Transparency) */}
-        <div className="w-full max-w-lg lg:max-w-xl relative hidden lg:flex justify-center flex-1 z-10">
-          {/* Subtle magical glow behind the blended image */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3/4 h-3/4 bg-sky-500/40 blur-[80px] rounded-full pointer-events-none"></div>
-          
-          <div className="animate-[floating_6s_ease-in-out_infinite] w-full max-w-[550px] relative">
-            <img 
-               src="/images/child_learning_hero.png" 
-               alt="A cute child happily studying with magical glowing books and an AI tutor" 
-               className="w-full h-auto object-cover opacity-85 mix-blend-screen contrast-110 saturate-150 [mask-image:radial-gradient(circle_at_center,black_30%,transparent_75%)]"
-            />
-          </div>
-        </div>
-      </Container>
-
-      <p
-        className="pointer-events-none absolute bottom-0 left-0 right-0 z-0 select-none px-4 pb-3 text-center font-tamil text-[clamp(2.5rem,12vw,7rem)] font-bold leading-none text-white/20 [text-shadow:0_8px_48px_rgba(0,0,0,0.35)]"
-        aria-hidden="true"
+        className="relative flex min-h-[70vh] flex-col justify-center overflow-hidden sm:min-h-[min(90vh,820px)] xl:min-h-[86vh]"
+        aria-labelledby="hero-heading"
       >
-        {HERO.tamilBanner}
-      </p>
-    </section>
+        <AnimatedBackground />
+        <div
+          className="pointer-events-none absolute inset-y-0 right-0 hidden w-[54%] lg:block xl:w-[50%] 2xl:w-[46%]"
+          aria-hidden="true"
+        >
+          <div
+            className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_60%_50%,rgba(0,114,188,0.2),transparent_72%)]"
+            style={{ animation: 'pulse-glow 8s ease-in-out infinite' }}
+          />
+          <div
+            className="absolute inset-y-[-10%] left-[18%] w-[18%] bg-gradient-to-r from-transparent via-white/20 to-transparent blur-xl"
+            style={{ animation: 'hero-sweep 9s ease-in-out infinite' }}
+          />
+          <img
+            src="/images/hero-child-black-bg.png"
+            alt=""
+            className="absolute right-[-4%] top-1/2 w-[112%] max-w-[980px] opacity-90 2xl:right-0 2xl:w-[104%]"
+            style={{
+              mixBlendMode: 'screen',
+              filter: 'brightness(1.08) contrast(1.04)',
+              animation: 'hero-drift 16s ease-in-out infinite',
+            }}
+          />
+        </div>
 
-    {/* Dedicated Horizontal Trust Strip */}
-    <div className="w-full border-y border-slate-800 bg-slate-950 px-4 py-6 shadow-[inset_0_20px_40px_rgba(0,0,0,0.3)] relative z-10 overflow-hidden flex items-center">
-      <div className="mx-auto flex w-full max-w-[85rem] flex-col md:flex-row items-center gap-6 md:gap-12">
-        <p className="whitespace-nowrap text-[0.7rem] font-bold uppercase tracking-[0.25em] text-slate-400 shrink-0">
-          {HERO.trustTitle}
-        </p>
-        <div className="hidden h-6 w-[1px] bg-slate-800 md:block shrink-0"></div>
-        
-        {/* Marquee Wrapper */}
-        <div className="relative flex overflow-hidden w-full [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
-          <div className="flex w-max animate-[marquee_20s_linear_infinite] items-center gap-8 md:gap-16 pr-8 md:pr-16 hover:[animation-play-state:paused]">
-            {[...HERO.trustPills, ...HERO.trustPills, ...HERO.trustPills, ...HERO.trustPills].map((pill, idx) => (
-              <div key={`${pill.replace(/\s+/g, '-')}-${idx}`} className="flex items-center gap-3 shrink-0">
-                <div className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-400">
-                  <svg className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" />
-                  </svg>
-                </div>
-                <span className="text-[0.85rem] font-semibold tracking-widest text-slate-300 whitespace-nowrap">
-                  {pill}
+        <Container className="relative z-10 py-14 sm:py-20 lg:py-28 xl:py-24 2xl:py-28">
+          <div ref={revealRef} className="reveal">
+            {/* Left — Text */}
+            <div className="max-w-2xl text-center lg:max-w-[47rem] lg:text-left xl:max-w-[45rem]">
+              <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-tkm-400/20 bg-tkm-900/40 px-3.5 py-1.5 backdrop-blur-sm sm:mb-8 sm:px-5 sm:py-2">
+                <span className="h-1.5 w-1.5 rounded-full bg-logo-green sm:h-2 sm:w-2 animate-[pulse-glow_2s_ease-in-out_infinite]" />
+                <span className="text-[0.7rem] font-semibold tracking-wide text-tkm-200 sm:text-[0.8rem]">
+                  {HERO.trustTitle}
                 </span>
               </div>
-            ))}
+
+              <h1
+                id="hero-heading"
+                className="mb-4 font-display text-3xl font-extrabold leading-[1.12] tracking-tight text-white sm:mb-6 sm:text-5xl lg:text-[3rem] xl:text-[3.35rem] 2xl:text-[3.6rem]"
+              >
+                <span className="block">Reimagining</span>
+                <span className="rainbow-text">Tamil Education</span>
+                <span className="block">for the AI Generation.</span>
+              </h1>
+
+              <p className="mx-auto mb-8 max-w-md text-base font-medium leading-relaxed text-tkm-200/80 sm:mb-10 sm:text-lg lg:mx-0 lg:text-[1.15rem]">
+                {HERO.subtitle}
+              </p>
+
+              <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-center lg:justify-start sm:gap-4">
+                <Link
+                  to="/admin-login"
+                  className="group inline-flex w-full items-center justify-center gap-2 rounded-full bg-white px-7 py-3 font-display text-[0.88rem] font-bold text-tkm-950 shadow-xl shadow-white/10 transition-all duration-300 hover:-translate-y-0.5 sm:w-auto sm:px-7 sm:py-3"
+                >
+                  <span>{HERO.ctaLogin}</span>
+                  <svg className="h-4 w-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                  </svg>
+                </Link>
+                <Link
+                  to="/register"
+                  className="inline-flex w-full items-center justify-center rounded-full border border-white/20 bg-white/10 px-7 py-3 font-display text-[0.88rem] font-bold text-white backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/15 sm:w-auto sm:px-7 sm:py-3"
+                >
+                  {HERO.ctaRequest}
+                </Link>
+              </div>
+            </div>
+          </div>
+        </Container>
+
+        {/* Tamil watermark */}
+        <p
+          className="pointer-events-none absolute bottom-0 left-0 right-0 select-none px-4 pb-3 text-center font-tamil text-[clamp(2rem,10vw,6rem)] font-bold leading-none text-white/[0.03]"
+          aria-hidden="true"
+        >
+          {HERO.tamilBanner}
+        </p>
+      </section>
+
+      {/* Trust strip */}
+      <div className="relative z-10 overflow-hidden border-y border-tkm-900/50 bg-tkm-950 px-4 py-4 sm:py-5">
+        <div className="mx-auto flex w-full max-w-[85rem] flex-col items-center gap-3 sm:flex-row sm:gap-8">
+          <p className="shrink-0 whitespace-nowrap text-[0.65rem] font-bold uppercase tracking-[0.2em] text-tkm-400 sm:text-[0.7rem]">
+            Trusted by
+          </p>
+          <div className="hidden h-5 w-px bg-tkm-800 sm:block" />
+          <div className="relative flex w-full overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
+            <div className="flex w-max animate-[marquee_25s_linear_infinite] items-center gap-6 pr-6 sm:gap-10 sm:pr-10 hover:[animation-play-state:paused]">
+              {[...HERO.trustPills, ...HERO.trustPills, ...HERO.trustPills, ...HERO.trustPills].map((pill, idx) => (
+                <div key={`${pill}-${idx}`} className="flex items-center gap-2 shrink-0">
+                  <div className="flex h-4 w-4 items-center justify-center rounded-full bg-logo-green/15 text-logo-green sm:h-5 sm:w-5">
+                    <svg className="h-2.5 w-2.5 sm:h-3 sm:w-3" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                  <span className="text-[0.75rem] font-semibold tracking-wide text-tkm-200/80 sm:text-[0.82rem]">
+                    {pill}
+                  </span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </>
+    </>
   )
 }

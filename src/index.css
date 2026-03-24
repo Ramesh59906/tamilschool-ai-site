@@ -1,10 +1,44 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Noto+Sans+Tamil:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Noto+Sans+Tamil:wght@400;500;600;700&display=swap');
 
 @import 'tailwindcss';
 
 @theme {
-  --font-sans: 'DM Sans', ui-sans-serif, system-ui, sans-serif;
-  --font-tamil: 'Noto Sans Tamil', 'DM Sans', ui-sans-serif, sans-serif;
+  --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Sora', 'Plus Jakarta Sans', ui-sans-serif, sans-serif;
+  --font-tamil: 'Noto Sans Tamil', 'Plus Jakarta Sans', ui-sans-serif, sans-serif;
+
+  /* Primary Blue — dominant color from TKM logo text */
+  --color-tkm-50: #eff6ff;
+  --color-tkm-100: #dbeafe;
+  --color-tkm-200: #bfdbfe;
+  --color-tkm-300: #7fb8f5;
+  --color-tkm-400: #4d9de8;
+  --color-tkm-500: #2483d6;
+  --color-tkm-600: #0072bc;
+  --color-tkm-700: #005fa0;
+  --color-tkm-800: #004a7c;
+  --color-tkm-900: #003660;
+  --color-tkm-950: #0a1e36;
+
+  /* Logo rainbow accent colors */
+  --color-logo-red: #e8363a;
+  --color-logo-orange: #f7941d;
+  --color-logo-yellow: #fdd835;
+  --color-logo-green: #00a651;
+  --color-logo-blue: #0072bc;
+  --color-logo-purple: #662d91;
+
+  /* Warm orange accent from logo */
+  --color-accent-50: #fff7ed;
+  --color-accent-100: #ffedd5;
+  --color-accent-200: #fed7aa;
+  --color-accent-300: #fdba74;
+  --color-accent-400: #f7941d;
+  --color-accent-500: #ea7c0f;
+  --color-accent-600: #d4650a;
+
+  --color-surface: #fafbfc;
+  --color-surface-alt: #f1f4f8;
 }
 
 @layer base {
@@ -13,33 +47,42 @@
   }
 
   body {
-    @apply min-h-svh bg-slate-100 font-sans text-[17px] leading-relaxed text-slate-600 antialiased;
+    @apply min-h-svh bg-surface font-sans text-[16px] leading-relaxed text-slate-700 antialiased;
   }
 }
 
-@keyframes blob {
-  0% { transform: translate(0px, 0px) scale(1); }
-  33% { transform: translate(30px, -50px) scale(1.1); }
-  66% { transform: translate(-20px, 20px) scale(0.9); }
-  100% { transform: translate(0px, 0px) scale(1); }
+/* ── Scroll-triggered reveal ──────────────────────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
-@keyframes floatUp {
-  0% { transform: translateY(100vh) scale(0); opacity: 0; }
-  20% { opacity: 0.5; }
-  80% { opacity: 0.5; }
-  100% { transform: translateY(-20vh) scale(1); opacity: 0; }
+/* ── Rainbow gradient utility from logo ───────────────── */
+.rainbow-gradient {
+  background: linear-gradient(135deg, #e8363a, #f7941d, #fdd835, #00a651, #0072bc, #662d91);
+}
+.rainbow-text {
+  background: linear-gradient(90deg, #e8363a, #f7941d, #fdd835, #00a651, #0072bc, #662d91);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
-@keyframes floating {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-20px); }
+/* ── Keyframes ────────────────────────────────────────── */
+@keyframes float-gentle {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-14px) rotate(2deg); }
 }
 
-@keyframes gradientBg {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.05); }
 }
 
 @keyframes marquee {
@@ -47,12 +90,98 @@
   100% { transform: translateX(-50%); }
 }
 
-@keyframes slideUpFade {
-  from { opacity: 0; transform: translateY(40px); }
-  to { opacity: 1; transform: translateY(0); }
+@keyframes rainbow-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
-@keyframes slideBackground {
-  0% { background-position: 0px 0px; }
-  100% { background-position: -80px -80px; }
+@keyframes hero-drift {
+  0%, 100% {
+    transform: translate3d(0, -50%, 0) scale(1);
+  }
+  25% {
+    transform: translate3d(-8px, -52%, 0) scale(1.015);
+  }
+  50% {
+    transform: translate3d(6px, -48%, 0) scale(1.02);
+  }
+  75% {
+    transform: translate3d(-4px, -51%, 0) scale(1.01);
+  }
+}
+
+@keyframes hero-sweep {
+  0% {
+    transform: translateX(-140%) skewX(-18deg);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.35;
+  }
+  45% {
+    opacity: 0.12;
+  }
+  100% {
+    transform: translateX(170%) skewX(-18deg);
+    opacity: 0;
+  }
+}
+
+@keyframes card-glow-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes card-float-idle {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-2px);
+  }
+}
+
+.aios-card {
+  position: relative;
+  isolation: isolate;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.35s ease;
+  animation: card-float-idle 6s ease-in-out infinite;
+}
+
+.aios-card::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: linear-gradient(120deg,
+    rgba(232, 54, 58, 0.18),
+    rgba(247, 148, 29, 0.18),
+    rgba(0, 166, 81, 0.18),
+    rgba(0, 114, 188, 0.18),
+    rgba(102, 45, 145, 0.18)
+  );
+  background-size: 220% 220%;
+  opacity: 0;
+  z-index: -1;
+  transition: opacity 0.35s ease;
+}
+
+.aios-card:hover {
+  transform: translateY(-6px) scale(1.01);
+  box-shadow: 0 18px 36px rgba(10, 30, 54, 0.14);
+}
+
+.aios-card:hover::before {
+  opacity: 1;
+  animation: card-glow-shift 3.5s linear infinite;
 }

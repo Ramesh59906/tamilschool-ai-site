@@ -1,137 +1,75 @@
-import React, { useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { ANALYTICS } from '../data/landingContent'
 import Container from './Container'
 
-function AnimatedCounter({ value, duration = 2500 }) {
-  const countRef = useRef(null)
+function AnimatedCounter({ value, suffix = '' }) {
+  const ref = useRef(null)
   const target = parseInt(value.toString().replace(/,/g, ''), 10) || 0
-
   useEffect(() => {
-    let startTimestamp = null
-    let animationFrame
-    
-    const step = (timestamp) => {
-      if (!startTimestamp) startTimestamp = timestamp
-      const progress = Math.min((timestamp - startTimestamp) / duration, 1)
-      // easeOutExpo easing function for a very smooth snappy stop
-      const easeOutExpo = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress)
-      
-      if (countRef.current) {
-        countRef.current.innerHTML = Math.floor(easeOutExpo * target).toLocaleString()
-      }
-      if (progress < 1) {
-        animationFrame = window.requestAnimationFrame(step)
-      } else {
-        if (countRef.current) countRef.current.innerHTML = target.toLocaleString()
-      }
+    const el = ref.current
+    if (!el) return
+    let startTs = null, frame
+    const step = (ts) => {
+      if (!startTs) startTs = ts
+      const p = Math.min((ts - startTs) / 2200, 1)
+      el.textContent = Math.floor((1 - Math.pow(1 - p, 4)) * target).toLocaleString()
+      if (p < 1) frame = requestAnimationFrame(step)
+      else el.textContent = target.toLocaleString()
     }
-    
-    const observer = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting) {
-        animationFrame = window.requestAnimationFrame(step)
-        observer.disconnect() // Only animate once when sliding into view
-      }
-    }, { threshold: 0.1 })
-    
-    if (countRef.current) {
-      observer.observe(countRef.current)
-    }
-    
-    return () => {
-      if (animationFrame) window.cancelAnimationFrame(animationFrame)
-      if (observer) observer.disconnect()
-    }
-  }, [target, duration])
-
-  return <span ref={countRef}>0</span>
+    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) { frame = requestAnimationFrame(step); obs.disconnect() } }, { threshold: 0.3 })
+    obs.observe(el)
+    return () => { if (frame) cancelAnimationFrame(frame); obs.disconnect() }
+  }, [target])
+  return <><span ref={ref}>0</span>{suffix}</>
 }
 
-const achievementIcons = [
-  { icon: '🏆', left: '10%', delay: '0s', duration: '28s', size: '3.5rem', rotate: '15deg', color: 'text-amber-500' },
-  { icon: '⭐', left: '25%', delay: '-5s', duration: '22s', size: '2.5rem', rotate: '-10deg', color: 'text-yellow-400' },
-  { icon: '📈', left: '40%', delay: '-12s', duration: '26s', size: '3rem', rotate: '5deg', color: 'text-emerald-500' },
-  { icon: '🏅', left: '55%', delay: '-2s', duration: '24s', size: '3.5rem', rotate: '-15deg', color: 'text-amber-600' },
-  { icon: '🎓', left: '70%', delay: '-18s', duration: '29s', size: '3rem', rotate: '20deg', color: 'text-indigo-500' },
-  { icon: '✨', left: '85%', delay: '-8s', duration: '21s', size: '2rem', rotate: '45deg', color: 'text-amber-400' },
-  { icon: '✅', left: '15%', delay: '-15s', duration: '25s', size: '2.5rem', rotate: '-5deg', color: 'text-emerald-400' },
-  { icon: '🌟', left: '35%', delay: '-7s', duration: '27s', size: '3rem', rotate: '25deg', color: 'text-yellow-500' },
-  { icon: '🎯', left: '60%', delay: '-20s', duration: '23s', size: '3rem', rotate: '-20deg', color: 'text-rose-500' },
-  { icon: '🥇', left: '80%', delay: '-10s', duration: '30s', size: '3.5rem', rotate: '10deg', color: 'text-amber-500' },
-];
+const STAT_ICONS = [
+  <svg key="s" className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5"><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3l1 3m0 0l.5 1.5m-.5-1.5h-9.5m0 0l-.5 1.5" /></svg>,
+  <svg key="m" className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5"><path strokeLinecap="round" strokeLinejoin="round" d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" /></svg>,
+  <svg key="v" className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5"><path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" /></svg>,
+]
+
+function StatCard({ stat, index, icon }) {
+  const ref = useRef(null)
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) { el.classList.add('visible'); obs.unobserve(el) } }, { threshold: 0.3 })
+    obs.observe(el)
+    return () => obs.disconnect()
+  }, [])
+  return (
+    <div ref={ref} className="reveal aios-card group flex flex-col items-center rounded-2xl border border-white/8 bg-white/[0.03] p-6 text-center backdrop-blur-sm transition-all duration-500 hover:-translate-y-2 hover:border-tkm-400/20 hover:bg-white/[0.06] sm:rounded-3xl sm:p-10" style={{ transitionDelay: `${index * 120}ms` }}>
+      <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-logo-blue/10 text-tkm-300 ring-1 ring-logo-blue/20 transition-transform duration-300 group-hover:scale-110">{icon}</div>
+      <span className="mb-2 block font-display text-3xl font-extrabold text-white sm:text-4xl"><AnimatedCounter value={stat.value} suffix={stat.valueSuffix ?? ''} /></span>
+      <span className="text-[0.85rem] font-bold uppercase tracking-widest text-tkm-300/60">{stat.label}</span>
+    </div>
+  )
+}
 
 export default function AnalyticsSection() {
+  const headRef = useRef(null)
+  useEffect(() => {
+    const el = headRef.current
+    if (!el) return
+    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) { el.classList.add('visible'); obs.unobserve(el) } }, { threshold: 0.2 })
+    obs.observe(el)
+    return () => obs.disconnect()
+  }, [])
+
   return (
-    <section
-      className="relative overflow-hidden bg-gradient-to-b from-slate-50 via-sky-50 to-emerald-50 py-16 md:py-[5.5rem]"
-      id="analytics"
-      aria-labelledby="analytics-heading"
-    >
-      {/* Background Magic Elements */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
-        {/* Soft radial glows to create depth */}
-        <div className="absolute -top-[10%] left-[20%] w-[40%] h-[40%] rounded-full bg-indigo-300/20 blur-[100px] animate-[blob_15s_infinite_ease-in-out]"></div>
-        <div className="absolute top-[40%] -right-[10%] w-[45%] h-[45%] rounded-full bg-emerald-300/20 blur-[120px] animate-[blob_18s_infinite_ease-in-out]" style={{ animationDelay: '2s' }}></div>
-        <div className="absolute -bottom-[10%] left-[30%] w-[50%] h-[50%] rounded-full bg-sky-300/20 blur-[110px] animate-[blob_20s_infinite_ease-in-out]" style={{ animationDelay: '5s' }}></div>
-        
-        {/* Subtle grid */}
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_70%_50%_at_50%_50%,#000_70%,transparent_100%)]"></div>
-
-        {/* Floating Achievement Icons */}
-        {achievementIcons.map((item, i) => (
-          <div 
-             key={i} 
-             className={`absolute animate-[floatUp_infinite_linear] opacity-[0.22] select-none drop-shadow-sm ${item.color}`}
-             style={{
-               left: item.left,
-               animationDuration: item.duration,
-               animationDelay: item.delay,
-             }}
-             aria-hidden="true"
-          >
-            <div style={{ transform: `rotate(${item.rotate})`, fontSize: item.size }}>
-              {item.icon}
-            </div>
-          </div>
-        ))}
-      </div>
-
+    <section className="relative overflow-hidden bg-tkm-950 py-14 sm:py-20 md:py-28" id="analytics" aria-labelledby="analytics-heading">
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_50%_0%,rgba(0,114,188,0.15),transparent)]" aria-hidden="true" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_50%_at_80%_80%,rgba(0,166,81,0.08),transparent)]" aria-hidden="true" />
       <Container className="relative z-10">
-        <div className="mx-auto max-w-2xl text-center mb-12 sm:mb-16 animate-[slideUpFade_0.8s_ease-out_both]">
-          <h2
-            id="analytics-heading"
-            className="mb-4 text-3xl font-extrabold tracking-tight text-slate-900 md:text-[2.2rem]"
-          >
-            {ANALYTICS.title}
-          </h2>
-          <p className="mb-4 text-lg font-bold uppercase tracking-widest text-emerald-600">{ANALYTICS.subtitle}</p>
-          <p className="text-base leading-relaxed text-slate-600">
-            {ANALYTICS.body}
-          </p>
+        <div ref={headRef} className="reveal mx-auto mb-10 max-w-2xl text-center sm:mb-16">
+          <span className="mb-3 inline-block rounded-full border border-logo-green/20 bg-logo-green/10 px-3 py-1 text-[0.7rem] font-bold uppercase tracking-widest text-emerald-300 sm:px-4 sm:py-1.5 sm:text-[0.75rem]">Insights</span>
+          <h2 id="analytics-heading" className="mb-3 font-display text-2xl font-extrabold tracking-tight text-white sm:mb-4 sm:text-3xl md:text-4xl">{ANALYTICS.title}</h2>
+          <p className="mb-2 text-base font-semibold text-accent-400 sm:mb-3 sm:text-lg">{ANALYTICS.subtitle}</p>
+          <p className="text-sm leading-relaxed text-tkm-200/70 sm:text-base">{ANALYTICS.body}</p>
         </div>
-
-        <div className="mx-auto grid max-w-4xl grid-cols-1 gap-6 sm:grid-cols-3">
-          {ANALYTICS.stats.map((s, idx) => (
-            <div 
-              key={s.label}
-              className="animate-[slideUpFade_0.8s_ease-out_both]"
-              style={{ animationDelay: `${idx * 150 + 200}ms` }}
-            >
-              <div
-                className="group relative flex h-full flex-col items-center justify-center overflow-hidden rounded-[32px] border border-white/80 bg-white/60 px-6 py-10 text-center shadow-[0_8px_30px_rgba(0,0,0,0.04)] backdrop-blur-xl transition-all duration-500 hover:-translate-y-3 hover:bg-white hover:shadow-[0_20px_40px_rgba(16,185,129,0.18)] hover:border-emerald-200"
-              >
-                {/* Subtle inner hover glow */}
-                <div className="absolute -inset-0 rounded-[32px] bg-gradient-to-b from-transparent to-emerald-500/10 opacity-0 transition-opacity duration-500 group-hover:opacity-100 pointer-events-none"></div>
-
-                <span className="relative z-10 mb-2 block text-[3.2rem] font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-br from-indigo-600 via-sky-500 to-emerald-500 transition-transform duration-500 group-hover:scale-110">
-                  <AnimatedCounter value={s.value} />
-                  {s.valueSuffix ?? ''}
-                </span>
-                <span className="relative z-10 text-[0.95rem] font-bold uppercase tracking-widest text-slate-500 transition-colors duration-300 group-hover:text-emerald-700">
-                  {s.label}
-                </span>
-              </div>
-            </div>
-          ))}
+        <div className="mx-auto grid max-w-4xl grid-cols-1 gap-4 sm:grid-cols-3 sm:gap-6">
+          {ANALYTICS.stats.map((s, idx) => <StatCard key={s.label} stat={s} index={idx} icon={STAT_ICONS[idx]} />)}
         </div>
       </Container>
     </section>
