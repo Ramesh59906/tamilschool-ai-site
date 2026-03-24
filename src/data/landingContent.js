@@ -11,7 +11,7 @@ export const NAV_LINKS = [
 
 export const NAV_AUTH = [
   { label: 'Admin Login', href: '/admin-login', variant: 'link' },
-  { label: 'Request access', href: '#', variant: 'cta' },
+  { label: 'Request access', href: '/register', variant: 'cta' },
 ]
 
 export const HERO = {
