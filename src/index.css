@@ -225,6 +225,97 @@
   color: transparent;
 }
 
+/* Cursor-follow splash effect (desktop + pointer devices only). */
+.splash-cursor {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+}
+
+.splash-cursor__dot,
+.splash-cursor__ring,
+.splash-cursor__glow {
+  position: fixed;
+  left: 0;
+  top: 0;
+  border-radius: 9999px;
+  will-change: transform, opacity;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.splash-cursor__dot {
+  width: 12px;
+  height: 12px;
+  background: radial-gradient(circle at 35% 35%, #f9a8d4 0%, #d946ef 45%, #7e22ce 100%);
+  box-shadow:
+    0 0 0 2px rgba(217, 70, 239, 0.28),
+    0 0 30px rgba(217, 70, 239, 0.65),
+    0 0 58px rgba(126, 34, 206, 0.52);
+}
+
+.splash-cursor__ring {
+  width: 34px;
+  height: 34px;
+}
+
+.splash-cursor__ring-pulse {
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  border: 2px solid rgba(244, 114, 182, 0.7);
+  box-shadow:
+    0 0 20px rgba(217, 70, 239, 0.34),
+    inset 0 0 12px rgba(192, 38, 211, 0.24);
+  animation: cursor-ring-blink 1.1s ease-in-out infinite;
+}
+
+.splash-cursor__glow {
+  width: 150px;
+  height: 150px;
+  background:
+    radial-gradient(circle, rgba(236, 72, 153, 0.38) 0%, rgba(168, 85, 247, 0.22) 46%, rgba(59, 130, 246, 0) 72%);
+  filter: blur(10px);
+  mix-blend-mode: screen;
+  opacity: 0.9;
+}
+
+.splash-cursor.is-pressed .splash-cursor__dot {
+  transform: translate(-50%, -50%) scale(0.82);
+}
+
+.splash-cursor.is-pressed .splash-cursor__ring {
+  transform: translate(-50%, -50%) scale(0.88);
+}
+
+.splash-cursor.is-pressed .splash-cursor__ring-pulse {
+  animation-duration: 0.7s;
+  opacity: 0.86;
+}
+
+.splash-cursor.is-pressed .splash-cursor__glow {
+  opacity: 0.62;
+  transform: translate(-50%, -50%) scale(0.86);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .splash-cursor {
+    display: none;
+  }
+}
+
+@keyframes cursor-ring-blink {
+  0%,
+  100% {
+    opacity: 0.45;
+    transform: scale(0.9);
+  }
+  50% {
+    opacity: 0.95;
+    transform: scale(1.08);
+  }
+}
+
 /* Light mode only: image backdrop for non-hero landing sections */
 html:not(.theme-dark) #modules,
 html:not(.theme-dark) #vocabulary,

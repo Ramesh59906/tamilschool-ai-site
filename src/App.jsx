@@ -12,6 +12,7 @@ import StudentHomePage from './pages/StudentHomePage'
 import ConversationModulePage from './pages/ConversationModulePage'
 import LearningProgressPage from './pages/LearningProgressPage'
 import PlaceholderModulePage from './pages/PlaceholderModulePage'
+import SplashCursor from './components/SplashCursor'
 
 export default function App() {
   const location = useLocation()
@@ -49,6 +50,7 @@ export default function App() {
 
   return (
     <>
+      <SplashCursor />
       <ScrollToHash />
       <Routes>
         <Route path="/" element={<HomePage />} />
