@@ -6,10 +6,18 @@ export default function ScrollToHash() {
 
   useEffect(() => {
     if (hash) {
-      const el = document.querySelector(hash)
-      if (el) {
-        el.scrollIntoView({ behavior: 'smooth' })
-        return
+      // Only scroll to "section" hashes like `#analytics`.
+      // Ignore router-like hashes like `#/login` which are not valid CSS selectors.
+      if (!hash.startsWith('#/')) {
+        try {
+          const el = document.querySelector(hash)
+          if (el) {
+            el.scrollIntoView({ behavior: 'smooth' })
+            return
+          }
+        } catch {
+          // Ignore invalid selector hashes.
+        }
       }
     }
     window.scrollTo({ top: 0, behavior: 'smooth' })

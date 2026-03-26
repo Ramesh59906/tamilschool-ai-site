@@ -1,7 +1,32 @@
-import { Link } from 'react-router-dom'
+import { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import AuthLayout from '../components/auth/AuthLayout'
+import { login } from '../auth/authStorage'
+
+const ROLE_OPTIONS = [
+  { id: 'admin', label: 'Admin' },
+  { id: 'teacher', label: 'Teacher' },
+  { id: 'parent', label: 'Parent' },
+]
 
 export default function AdminLoginPage() {
+  const navigate = useNavigate()
+  const [role, setRole] = useState('admin')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
+
+  function handleSubmit(e) {
+    e.preventDefault()
+    setError('')
+    try {
+      login({ email, password, role })
+      navigate('/dashboard')
+    } catch (err) {
+      setError(err?.message || 'Login failed.')
+    }
+  }
+
   return (
     <AuthLayout heading="Welcome Back!" subheading="Sign in to continue your learning journey">
       <Link
@@ -15,7 +40,26 @@ export default function AdminLoginPage() {
       <h1 className="mt-4 text-4xl font-extrabold tracking-tight text-slate-900">Hello!</h1>
       <p className="mt-1 text-base text-slate-500">Sign in to your account</p>
 
-      <form className="mt-10 space-y-5" onSubmit={(e) => e.preventDefault()}>
+      <form className="mt-10 space-y-5" onSubmit={handleSubmit}>
+        <div>
+          <label htmlFor="role" className="mb-1.5 block text-sm font-semibold text-slate-700">
+            I am a
+          </label>
+          <select
+            id="role"
+            name="role"
+            value={role}
+            onChange={(e) => setRole(e.target.value)}
+            className="w-full rounded-xl border border-blue-100 bg-white px-4 py-3 text-base font-semibold text-slate-700 outline-none transition focus:border-blue-400"
+          >
+            {ROLE_OPTIONS.map((r) => (
+              <option key={r.id} value={r.id}>
+                {r.label}
+              </option>
+            ))}
+          </select>
+        </div>
+
         <div className="rounded-2xl bg-blue-50/80 p-1.5 shadow-[0_10px_28px_rgba(37,99,235,0.18)]">
           <input
             id="email"
@@ -24,6 +68,8 @@ export default function AdminLoginPage() {
             autoComplete="email"
             required
             placeholder="E-mail"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             className="w-full rounded-xl border border-blue-100 bg-white px-4 py-3 text-base text-slate-700 outline-none transition focus:border-blue-400"
           />
         </div>
@@ -36,6 +82,8 @@ export default function AdminLoginPage() {
             autoComplete="current-password"
             required
             placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             className="w-full rounded-xl border border-cyan-100 bg-white px-4 py-3 text-base text-slate-700 outline-none transition focus:border-cyan-500"
           />
         </div>
@@ -49,6 +97,10 @@ export default function AdminLoginPage() {
             Forgot password?
           </Link>
         </div>
+
+        {error && (
+          <div className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">{error}</div>
+        )}
 
         <button
           type="submit"

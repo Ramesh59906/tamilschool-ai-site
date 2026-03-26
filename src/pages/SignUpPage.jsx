@@ -1,13 +1,43 @@
-import { Link } from 'react-router-dom'
+import { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import AuthLayout from '../components/auth/AuthLayout'
+import { signUp } from '../auth/authStorage'
+
+const ROLE_OPTIONS = [
+  { id: 'parent', label: 'Parent' },
+  { id: 'teacher', label: 'Teacher' },
+  { id: 'admin', label: 'Admin' },
+]
 
 export default function SignUpPage() {
+  const navigate = useNavigate()
+  const [role, setRole] = useState('parent')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [error, setError] = useState('')
+
+  function handleSubmit(e) {
+    e.preventDefault()
+    setError('')
+
+    try {
+      if (password !== confirmPassword) {
+        throw new Error('Passwords do not match.')
+      }
+      signUp({ email, password, role })
+      navigate('/dashboard')
+    } catch (err) {
+      setError(err?.message || 'Sign up failed.')
+    }
+  }
+
   return (
     <AuthLayout heading="Join Us!" subheading="Start your Tamil learning journey today">
       <h1 className="text-4xl font-extrabold tracking-tight text-slate-900">Sign up</h1>
       <p className="mt-1 text-base text-slate-500">Create an account to get started</p>
 
-      <form className="mt-8 space-y-5" onSubmit={(e) => e.preventDefault()}>
+      <form className="mt-8 space-y-5" onSubmit={handleSubmit}>
         <div>
           <label htmlFor="role" className="mb-1.5 block text-sm font-semibold text-slate-700">
             I am a
@@ -15,11 +45,15 @@ export default function SignUpPage() {
           <select
             id="role"
             name="role"
+            value={role}
+            onChange={(e) => setRole(e.target.value)}
             className="w-full rounded-xl border border-blue-100 bg-white px-4 py-3 text-base font-semibold text-slate-700 outline-none transition focus:border-blue-400"
           >
-            <option>Parent</option>
-            <option>Teacher</option>
-            <option>Student</option>
+            {ROLE_OPTIONS.map((r) => (
+              <option key={r.id} value={r.id}>
+                {r.label}
+              </option>
+            ))}
           </select>
         </div>
 
@@ -32,8 +66,10 @@ export default function SignUpPage() {
             name="email"
             type="email"
             autoComplete="email"
-            required
             placeholder="you@example.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
             className="w-full rounded-xl border border-blue-100 bg-white px-4 py-3 text-base text-slate-700 outline-none transition focus:border-blue-400"
           />
         </div>
@@ -47,8 +83,10 @@ export default function SignUpPage() {
             name="password"
             type="password"
             autoComplete="new-password"
-            required
             placeholder="Create a strong password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
             className="w-full rounded-xl border border-cyan-100 bg-white px-4 py-3 text-base text-slate-700 outline-none transition focus:border-cyan-500"
           />
           <p className="mt-1 text-xs text-slate-400">
@@ -65,11 +103,17 @@ export default function SignUpPage() {
             name="confirm-password"
             type="password"
             autoComplete="new-password"
-            required
             placeholder="Confirm your password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            required
             className="w-full rounded-xl border border-cyan-100 bg-white px-4 py-3 text-base text-slate-700 outline-none transition focus:border-cyan-500"
           />
         </div>
+
+        {error && (
+          <div className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">{error}</div>
+        )}
 
         <button
           type="submit"
