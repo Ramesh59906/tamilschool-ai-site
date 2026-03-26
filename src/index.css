@@ -381,3 +381,9 @@ html:not(.theme-dark) #vocabulary .mx-auto.mb-10.max-w-2xl.text-center p {
   opacity: 1;
   animation: card-glow-shift 3.5s linear infinite;
 }
+
+/* Keep hover glow disabled only in How It Works cards. */
+#how-it-works .aios-card:hover::before {
+  opacity: 0;
+  animation: none;
+}

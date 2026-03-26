@@ -2,6 +2,63 @@ import { useEffect, useMemo, useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
 import { getCurrentUser, getRoleLabel, isAuthed, logout } from '../auth/authStorage'
 
+const chartDataByRole = {
+  admin: {
+    weeklyActivity: [
+      { label: 'Mon', value: 132 },
+      { label: 'Tue', value: 148 },
+      { label: 'Wed', value: 171 },
+      { label: 'Thu', value: 166 },
+      { label: 'Fri', value: 190 },
+      { label: 'Sat', value: 120 },
+      { label: 'Sun', value: 92 },
+    ],
+    gradeMastery: [
+      { label: 'Grade 1', value: 72 },
+      { label: 'Grade 2', value: 80 },
+      { label: 'Grade 3', value: 76 },
+      { label: 'Grade 4', value: 84 },
+    ],
+    readiness: 84,
+  },
+  teacher: {
+    weeklyActivity: [
+      { label: 'Mon', value: 18 },
+      { label: 'Tue', value: 20 },
+      { label: 'Wed', value: 22 },
+      { label: 'Thu', value: 19 },
+      { label: 'Fri', value: 24 },
+      { label: 'Sat', value: 10 },
+      { label: 'Sun', value: 6 },
+    ],
+    gradeMastery: [
+      { label: 'Reading', value: 78 },
+      { label: 'Writing', value: 71 },
+      { label: 'Speaking', value: 83 },
+      { label: 'Listening', value: 86 },
+    ],
+    readiness: 79,
+  },
+  parent: {
+    weeklyActivity: [
+      { label: 'Mon', value: 34 },
+      { label: 'Tue', value: 28 },
+      { label: 'Wed', value: 42 },
+      { label: 'Thu', value: 36 },
+      { label: 'Fri', value: 40 },
+      { label: 'Sat', value: 52 },
+      { label: 'Sun', value: 46 },
+    ],
+    gradeMastery: [
+      { label: 'Letters', value: 88 },
+      { label: 'Words', value: 74 },
+      { label: 'Reading', value: 69 },
+      { label: 'Conversation', value: 64 },
+    ],
+    readiness: 73,
+  },
+}
+
 function Card({ title, children, isDark }) {
   return (
     <div
@@ -142,6 +199,7 @@ export default function DashboardPage() {
 
   const tabs = tabsByRole[role] ?? tabsByRole.admin
   const activeLabel = tabs.find((t) => t.id === activeTab)?.label ?? 'Dashboard'
+  const chartData = chartDataByRole[role] ?? chartDataByRole.admin
 
   function handleLogout() {
     logout()
@@ -315,11 +373,7 @@ export default function DashboardPage() {
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
             {role === 'admin' && activeTab === 'overview' && (
               <>
-                <Card title="School overview" isDark={isDark}>
-                  <p>
-                    Manage overall learning setup and coordinate teacher access. (UI placeholder for now)
-                  </p>
-                </Card>
+                <TrendChartCard title="Weekly sessions trend" data={chartData.weeklyActivity} isDark={isDark} />
                 <Card title="Quick actions" isDark={isDark}>
                   <div className="flex flex-col gap-2">
                     <div className={`rounded-xl px-4 py-3 font-bold ${isDark ? 'bg-slate-800 text-slate-100' : 'bg-slate-50 text-slate-800'}`}>Invite teachers</div>
@@ -327,6 +381,13 @@ export default function DashboardPage() {
                     <div className={`rounded-xl px-4 py-3 font-bold ${isDark ? 'bg-slate-800 text-slate-100' : 'bg-slate-50 text-slate-800'}`}>Configure safety policy</div>
                   </div>
                 </Card>
+                <BarChartCard title="Mastery by grade" data={chartData.gradeMastery} isDark={isDark} />
+                <ProgressRingCard
+                  title="School readiness score"
+                  value={chartData.readiness}
+                  caption="Overall readiness for next-week goals."
+                  isDark={isDark}
+                />
               </>
             )}
 
@@ -365,11 +426,16 @@ export default function DashboardPage() {
 
             {role === 'teacher' && activeTab === 'overview' && (
               <>
-                <Card title="Class overview" isDark={isDark}>
-                  <p>Track class progress and upcoming activities UI placeholder.</p>
-                </Card>
-                <Card title="Assignments (placeholder)" isDark={isDark}>
-                  <p>Assign lessons by grade and topic UI placeholder.</p>
+                <TrendChartCard title="Class activity trend" data={chartData.weeklyActivity} isDark={isDark} />
+                <BarChartCard title="Skill mastery breakdown" data={chartData.gradeMastery} isDark={isDark} />
+                <ProgressRingCard
+                  title="Review readiness"
+                  value={chartData.readiness}
+                  caption="Students prepared for formative review."
+                  isDark={isDark}
+                />
+                <Card title="Assignments" isDark={isDark}>
+                  <p>Assign lessons by grade and topic, then monitor completion in real time.</p>
                 </Card>
               </>
             )}
@@ -409,9 +475,14 @@ export default function DashboardPage() {
 
             {role === 'parent' && activeTab === 'overview' && (
               <>
-                <Card title="Family overview" isDark={isDark}>
-                  <p>See learning progress and achievements UI placeholder.</p>
-                </Card>
+                <TrendChartCard title="Weekly learning minutes" data={chartData.weeklyActivity} isDark={isDark} />
+                <BarChartCard title="Learning progress by skill" data={chartData.gradeMastery} isDark={isDark} />
+                <ProgressRingCard
+                  title="Weekly goal completion"
+                  value={chartData.readiness}
+                  caption="How close your child is to this week's target."
+                  isDark={isDark}
+                />
                 <Card title="Learning safety" isDark={isDark}>
                   <p>Review safety & privacy features UI placeholder.</p>
                 </Card>
@@ -466,5 +537,117 @@ function StatPill({ label, value, sub, accentClass, isDark }) {
       </p>
       <p className={`mt-0.5 text-xs ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>{sub}</p>
     </div>
+  )
+}
+
+function BarChartCard({ title, data, isDark }) {
+  const max = Math.max(...data.map((d) => d.value), 1)
+  return (
+    <Card title={title} isDark={isDark}>
+      <div className="space-y-3">
+        {data.map((item) => (
+          <div key={item.label}>
+            <div className="mb-1 flex items-center justify-between text-xs font-semibold">
+              <span className={isDark ? 'text-slate-300' : 'text-slate-600'}>{item.label}</span>
+              <span className={isDark ? 'text-slate-400' : 'text-slate-500'}>{item.value}</span>
+            </div>
+            <div className={`h-2 rounded-full ${isDark ? 'bg-slate-800' : 'bg-slate-100'}`}>
+              <div
+                className="h-2 rounded-full bg-gradient-to-r from-tkm-500 to-emerald-500"
+                style={{ width: `${(item.value / max) * 100}%` }}
+              />
+            </div>
+          </div>
+        ))}
+      </div>
+    </Card>
+  )
+}
+
+function TrendChartCard({ title, data, isDark }) {
+  const width = 560
+  const height = 220
+  const xStep = width / (data.length - 1 || 1)
+  const max = Math.max(...data.map((d) => d.value), 1)
+  const min = Math.min(...data.map((d) => d.value), 0)
+  const spread = max - min || 1
+
+  const points = data
+    .map((d, i) => {
+      const x = i * xStep
+      const y = height - ((d.value - min) / spread) * (height - 24) - 12
+      return `${x},${y}`
+    })
+    .join(' ')
+
+  return (
+    <Card title={title} isDark={isDark}>
+      <div className="w-full overflow-x-auto">
+        <svg viewBox={`0 0 ${width} ${height + 32}`} className="h-52 w-full min-w-[420px]" role="img" aria-label={title}>
+          <defs>
+            <linearGradient id="chartStroke" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stopColor="#14b8a6" />
+              <stop offset="100%" stopColor="#22c55e" />
+            </linearGradient>
+          </defs>
+          <polyline fill="none" stroke="url(#chartStroke)" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" points={points} />
+          {data.map((item, idx) => {
+            const x = idx * xStep
+            const y = height - ((item.value - min) / spread) * (height - 24) - 12
+            return (
+              <g key={item.label}>
+                <circle cx={x} cy={y} r="6" className={isDark ? 'fill-slate-100' : 'fill-slate-900'} />
+                <text x={x} y={height + 18} textAnchor="middle" className={`text-[11px] ${isDark ? 'fill-slate-400' : 'fill-slate-500'}`}>
+                  {item.label}
+                </text>
+              </g>
+            )
+          })}
+        </svg>
+      </div>
+    </Card>
+  )
+}
+
+function ProgressRingCard({ title, value, caption, isDark }) {
+  const safeValue = Math.max(0, Math.min(100, value))
+  const radius = 58
+  const strokeWidth = 12
+  const circumference = 2 * Math.PI * radius
+  const dashOffset = circumference - (safeValue / 100) * circumference
+
+  return (
+    <Card title={title} isDark={isDark}>
+      <div className="flex flex-col items-center gap-4 py-2">
+        <svg viewBox="0 0 160 160" className="h-36 w-36" role="img" aria-label={`${safeValue}%`}>
+          <circle cx="80" cy="80" r={radius} strokeWidth={strokeWidth} className={isDark ? 'stroke-slate-800' : 'stroke-slate-200'} fill="none" />
+          <circle
+            cx="80"
+            cy="80"
+            r={radius}
+            strokeWidth={strokeWidth}
+            strokeLinecap="round"
+            strokeDasharray={circumference}
+            strokeDashoffset={dashOffset}
+            stroke="url(#progressGradient)"
+            transform="rotate(-90 80 80)"
+            fill="none"
+          />
+          <defs>
+            <linearGradient id="progressGradient" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stopColor="#14b8a6" />
+              <stop offset="100%" stopColor="#22c55e" />
+            </linearGradient>
+          </defs>
+          <text x="80" y="78" textAnchor="middle" className={`font-display text-3xl font-bold ${isDark ? 'fill-slate-100' : 'fill-slate-900'}`}>
+            {safeValue}%
+          </text>
+          <text x="80" y="98" textAnchor="middle" className={`text-xs ${isDark ? 'fill-slate-400' : 'fill-slate-500'}`}>
+            ready
+          </text>
+        </svg>
+        <p className={`text-center text-sm ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>{caption}</p>
+      </div>
+    </Card>
   )
 }
