@@ -92,7 +92,7 @@ export default function ModulesSection() {
                   </p>
                   
                   <ul className="relative z-10 m-0 flex flex-col gap-3.5 p-0">
-                    {m.items.map((item, i) => (
+                    {m.items.map((item) => (
                       <li key={item} className="flex items-start gap-3.5 text-[0.95rem] font-medium text-slate-600 transition-all duration-300 group-hover:text-slate-700">
                         <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-teal-400 to-emerald-500 text-white shadow-sm shadow-emerald-500/20 group-hover:scale-110 transition-transform duration-300">
                           <svg className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">

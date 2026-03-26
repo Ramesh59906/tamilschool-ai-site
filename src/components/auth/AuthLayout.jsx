@@ -41,10 +41,8 @@ export default function AuthLayout({ heading, subheading, children }) {
               className="auth-illus-float h-80 w-auto"
               style={{
                 mixBlendMode: 'multiply',
-                WebkitMaskImage: 'radial-gradient(ellipse 55% 82% at 50% 50%, black 65%, transparent 100%)',
-                maskImage: 'radial-gradient(ellipse 55% 55% at 50% 50%, black 55%, transparent 100%)',
-                WebkitMaskImage: 'radial-gradient(ellipse 55% 65% at 30% 50%, black 55%, transparent 100%)',
-                maskImage: 'radial-gradient(ellipse 55% 55% at 50% 50%, black 55%, transparent 100%)',
+                WebkitMaskImage: 'radial-gradient(ellipse 55% 65% at 50% 50%, black 60%, transparent 100%)',
+                maskImage: 'radial-gradient(ellipse 55% 65% at 50% 50%, black 60%, transparent 100%)',
               }}
             />
           </div>

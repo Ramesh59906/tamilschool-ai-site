@@ -10,6 +10,11 @@ const nightSkyIcons = [
   { icon: '⭐', left: '75%', delay: '-15s', duration: '19s', size: '1.5rem', color: 'text-rose-200' },
 ];
 
+const nightSkyStars = nightSkyIcons.map((item, i) => {
+  const seed = (Math.sin((i + 1) * 1337) * 10000) % 1
+  return { ...item, top: `${Math.abs(seed) * 80}%` }
+})
+
 export default function TestimonialsSection() {
   // Duplicate items to ensure a seamless infinite marquee loop
   const carouselItems = [...TESTIMONIALS.items, ...TESTIMONIALS.items, ...TESTIMONIALS.items, ...TESTIMONIALS.items];
@@ -28,13 +33,13 @@ export default function TestimonialsSection() {
         <div className="absolute -bottom-[20%] left-[15%] w-[65%] h-[65%] rounded-full bg-purple-600/15 blur-[120px] animate-[blob_25s_infinite_ease-in-out]" style={{ animationDelay: '10s' }}></div>
 
         {/* Floating Stars */}
-        {nightSkyIcons.map((item, i) => (
+        {nightSkyStars.map((item, i) => (
           <div 
              key={i} 
              className={`absolute animate-[floating_8s_ease-in-out_infinite] opacity-40 select-none ${item.color}`}
              style={{
                left: item.left,
-               top: `${Math.random() * 80}%`, // Distribute vertically
+               top: item.top,
                animationDuration: item.duration,
                animationDelay: item.delay,
                fontSize: item.size
