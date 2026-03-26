@@ -34,8 +34,8 @@ export default function StudentHomePage() {
       <header className="sticky top-0 z-30 border-b border-white/10 bg-slate-950/70 backdrop-blur">
         <div className="mx-auto flex max-w-[90rem] items-center justify-between px-4 py-3">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/10 font-display text-lg font-extrabold ring-2 ring-emerald-500/30">
-              TKM
+            <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl bg-white/10 ring-2 ring-emerald-500/30">
+              <img src="/images/tkm-logo.png" alt="Tamil Katral Maiyam logo" className="h-full w-full object-cover" />
             </div>
             <div className="flex flex-col">
               <div className="text-xs font-bold uppercase tracking-widest text-emerald-300">Learning modules</div>

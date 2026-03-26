@@ -24,7 +24,13 @@ function StepCard({ step, index, color }) {
   }, [])
 
   return (
-    <li ref={ref} className="reveal aios-card group relative rounded-2xl px-3 sm:px-4 md:px-0" style={{ transitionDelay: `${index * 120}ms` }}>
+    <li
+      ref={ref}
+      className={`reveal ${isLeft ? 'reveal-left' : 'reveal-right'} aios-card group relative rounded-2xl px-3 sm:px-4 md:px-0`}
+      style={{ transitionDelay: `${index * 120}ms` }}
+      data-aos={isLeft ? 'fade-right' : 'fade-left'}
+      data-aos-delay={index * 120}
+    >
       <div className="flex gap-4 pb-8 sm:gap-6 sm:pb-12 md:hidden">
         <div className="flex flex-col items-center">
           <div className={`relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl sm:h-12 sm:w-12 sm:rounded-2xl ${color.bg} font-display text-base font-bold text-white shadow-lg sm:text-lg ${color.shadow} ring-4 ring-white transition-transform duration-300 group-hover:scale-110`}>

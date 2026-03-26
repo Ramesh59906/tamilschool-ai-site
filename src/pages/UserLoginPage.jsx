@@ -9,9 +9,15 @@ const ROLE_OPTIONS = [
   { id: 'teacher', label: 'Teacher' },
 ]
 
-function roleTabClass(active) {
+function roleTabClass(active, isDark) {
+  if (isDark) {
+    return `inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2 text-sm font-bold transition ${
+      active ? 'bg-emerald-500/15 text-emerald-100 ring-1 ring-emerald-400/30' : 'bg-white/5 text-slate-300 hover:bg-white/10'
+    }`
+  }
+
   return `inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2 text-sm font-bold transition ${
-    active ? 'bg-emerald-500/15 text-emerald-100 ring-1 ring-emerald-400/30' : 'bg-white/5 text-slate-300 hover:bg-white/10'
+    active ? 'bg-emerald-100 text-emerald-700 ring-1 ring-emerald-300' : 'bg-white text-slate-600 ring-1 ring-slate-200 hover:bg-slate-50'
   }`
 }
 
@@ -25,6 +31,7 @@ export default function UserLoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
+  const isDark = typeof document !== 'undefined' && document.documentElement.classList.contains('theme-dark')
 
   const from = useMemo(() => {
     const stateFrom = location.state?.from?.pathname
@@ -61,10 +68,16 @@ export default function UserLoginPage() {
       <h1 className="mt-4 text-4xl font-extrabold tracking-tight text-slate-900">Login</h1>
       <p className="mt-1 text-base text-slate-500">Choose your role and sign in</p>
 
-      <div className="mt-6 rounded-2xl bg-slate-950 p-2 shadow-[0_18px_48px_rgba(2,6,23,0.35)]">
+      <div
+        className={`mt-6 rounded-2xl p-2 ${
+          isDark
+            ? 'bg-slate-950 shadow-[0_18px_48px_rgba(2,6,23,0.35)]'
+            : 'bg-slate-100 shadow-[0_12px_28px_rgba(15,23,42,0.08)]'
+        }`}
+      >
         <div className="grid grid-cols-3 gap-2">
           {ROLE_OPTIONS.map((r) => (
-            <button key={r.id} type="button" onClick={() => setRole(r.id)} className={roleTabClass(role === r.id)}>
+            <button key={r.id} type="button" onClick={() => setRole(r.id)} className={roleTabClass(role === r.id, isDark)}>
               {r.label}
             </button>
           ))}

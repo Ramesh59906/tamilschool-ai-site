@@ -2,6 +2,10 @@
 
 @import 'tailwindcss';
 
+:root {
+  --aos-distance: 86px;
+}
+
 @theme {
   --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
   --font-display: 'Sora', 'Plus Jakarta Sans', ui-sans-serif, sans-serif;
@@ -46,8 +50,141 @@
     @apply scroll-smooth;
   }
 
+  html.theme-dark {
+    color-scheme: dark;
+    --color-surface: #070d18;
+    --color-surface-alt: #0d1728;
+    --color-tkm-50: #dbeafe;
+    --color-tkm-100: #bfdbfe;
+    --color-tkm-200: #93c5fd;
+    --color-tkm-300: #60a5fa;
+    --color-tkm-400: #3b82f6;
+    --color-tkm-500: #2563eb;
+    --color-tkm-600: #1d4ed8;
+    --color-tkm-700: #1e40af;
+    --color-tkm-800: #1e3a8a;
+    --color-tkm-900: #172554;
+    --color-tkm-950: #020617;
+  }
+
   body {
     @apply min-h-svh bg-surface font-sans text-[16px] leading-relaxed text-slate-700 antialiased;
+  }
+
+  html.theme-dark body {
+    color: #d1d5db;
+    background-color: var(--color-surface);
+  }
+
+  /* Home sections still use static light utility classes.
+     Override common card/text utilities in dark theme. */
+  html.theme-dark main :not(button):not(a)[class*='bg-white'] {
+    background-color: rgba(15, 23, 42, 0.88) !important;
+  }
+
+  html.theme-dark main :not(button):not(a)[class*='bg-gradient-to-'] {
+    background-image: none !important;
+    background-color: rgba(15, 23, 42, 0.9) !important;
+  }
+
+  html.theme-dark main :not(button):not(a)[class*='from-white'],
+  html.theme-dark main :not(button):not(a)[class*='to-white'],
+  html.theme-dark main :not(button):not(a)[class*='from-slate-'],
+  html.theme-dark main :not(button):not(a)[class*='to-slate-'],
+  html.theme-dark main :not(button):not(a)[class*='from-emerald-'],
+  html.theme-dark main :not(button):not(a)[class*='to-emerald-'],
+  html.theme-dark main :not(button):not(a)[class*='from-indigo-'],
+  html.theme-dark main :not(button):not(a)[class*='to-indigo-'] {
+    --tw-gradient-from: rgba(15, 23, 42, 0.9) !important;
+    --tw-gradient-to: rgba(15, 23, 42, 0.9) !important;
+    --tw-gradient-stops: rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.9) !important;
+  }
+
+  html.theme-dark main [class*='border-slate-'],
+  html.theme-dark main [class*='border-white'] {
+    border-color: rgba(148, 163, 184, 0.22) !important;
+  }
+
+  html.theme-dark main [class*='text-slate-900'],
+  html.theme-dark main [class*='text-slate-800'],
+  html.theme-dark main [class*='text-slate-700'] {
+    color: #f8fafc !important;
+  }
+
+  html.theme-dark main [class*='text-slate-600'],
+  html.theme-dark main [class*='text-slate-500'],
+  html.theme-dark main [class*='text-slate-400'] {
+    color: #cbd5e1 !important;
+  }
+
+  html.theme-dark main [class*='shadow-'] {
+    box-shadow: 0 18px 34px rgba(2, 6, 23, 0.45) !important;
+  }
+
+  html.theme-dark main section div[class*='rounded-'],
+  html.theme-dark main section form[class*='rounded-'],
+  html.theme-dark main section article {
+    background-color: rgba(2, 6, 23, 0.92) !important;
+  }
+
+  /* Dedicated auth dark styling for better contrast/readability. */
+  html.theme-dark .auth-shell .auth-form-card {
+    background: linear-gradient(180deg, rgba(2, 6, 23, 0.96), rgba(10, 20, 35, 0.92));
+    border-color: rgba(51, 65, 85, 0.9);
+    box-shadow: 0 28px 60px rgba(2, 6, 23, 0.6);
+  }
+
+  html.theme-dark .auth-shell h1,
+  html.theme-dark .auth-shell label {
+    color: #f8fafc !important;
+  }
+
+  html.theme-dark .auth-shell p,
+  html.theme-dark .auth-shell span,
+  html.theme-dark .auth-shell .text-slate-500,
+  html.theme-dark .auth-shell .text-slate-400 {
+    color: #94a3b8 !important;
+  }
+
+  html.theme-dark .auth-shell input,
+  html.theme-dark .auth-shell select {
+    background-color: rgba(15, 23, 42, 0.92) !important;
+    border-color: rgba(71, 85, 105, 0.8) !important;
+    color: #e2e8f0 !important;
+  }
+
+  html.theme-dark .auth-shell input::placeholder {
+    color: #64748b !important;
+  }
+
+  html.theme-dark .auth-shell input:focus,
+  html.theme-dark .auth-shell select:focus {
+    border-color: rgba(45, 212, 191, 0.85) !important;
+    box-shadow: 0 0 0 3px rgba(45, 212, 191, 0.18) !important;
+  }
+
+  html.theme-dark .auth-shell .bg-blue-50\/80,
+  html.theme-dark .auth-shell .bg-cyan-50\/80 {
+    background-color: rgba(15, 23, 42, 0.35) !important;
+    box-shadow: none !important;
+  }
+
+  /* Ensure pointer cursor on interactive elements site-wide. */
+  a,
+  button,
+  [role='button'],
+  input[type='button'],
+  input[type='submit'],
+  input[type='reset'],
+  summary {
+    cursor: pointer;
+  }
+
+  button:disabled,
+  [role='button'][aria-disabled='true'],
+  input:disabled,
+  summary:disabled {
+    cursor: not-allowed;
   }
 }
 
@@ -63,6 +200,20 @@
   transform: translateY(0);
 }
 
+.reveal-left {
+  transform: translate3d(-44px, 16px, 0);
+}
+
+.reveal-right {
+  transform: translate3d(44px, 16px, 0);
+}
+
+.reveal-left.visible,
+.reveal-right.visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
 /* ── Rainbow gradient utility from logo ───────────────── */
 .rainbow-gradient {
   background: linear-gradient(135deg, #e8363a, #f7941d, #fdd835, #00a651, #0072bc, #662d91);
@@ -72,6 +223,51 @@
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+}
+
+/* Light mode only: image backdrop for non-hero landing sections */
+html:not(.theme-dark) #modules,
+html:not(.theme-dark) #vocabulary,
+html:not(.theme-dark) #safety {
+  background-image: url('/images/Gemini_Generated_Image_iaxpp4iaxpp4iaxp.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* Keep content readable but allow backdrop image visibility in light mode */
+html:not(.theme-dark) #modules article,
+html:not(.theme-dark) #vocabulary article,
+html:not(.theme-dark) #safety article,
+html:not(.theme-dark) #modules .aios-card,
+html:not(.theme-dark) #vocabulary .aios-card,
+html:not(.theme-dark) #safety .aios-card {
+  background-color: rgba(255, 255, 255, 0.56) !important;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-color: rgba(255, 255, 255, 0.55) !important;
+}
+
+html:not(.theme-dark) #modules h2,
+html:not(.theme-dark) #vocabulary h2,
+html:not(.theme-dark) #safety h2 {
+  color: #ffffff !important;
+  text-shadow: 0 3px 14px rgba(2, 6, 23, 0.55);
+}
+
+html:not(.theme-dark) #modules p,
+html:not(.theme-dark) #vocabulary p {
+  color: #f8fafc !important;
+  text-shadow: 0 2px 10px rgba(2, 6, 23, 0.5);
+}
+
+html:not(.theme-dark) #modules .mx-auto.mb-10.max-w-2xl.text-center p,
+html:not(.theme-dark) #vocabulary .mx-auto.mb-10.max-w-2xl.text-center p {
+  display: inline-block;
+  padding: 0.22rem 0.55rem;
+  border-radius: 0.45rem;
+  background: rgba(2, 6, 23, 0.28);
+  backdrop-filter: blur(2px);
 }
 
 /* ── Keyframes ────────────────────────────────────────── */

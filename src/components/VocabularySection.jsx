@@ -30,7 +30,14 @@ export default function VocabularySection() {
           {VOCABULARY.tabs.map((tab, idx) => {
             const theme = TAB_THEMES[idx]
             return (
-              <article key={tab.label} ref={(el) => { cardRefs.current[idx] = el }} className={`reveal aios-card group relative flex h-full flex-col overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-6 transition-all duration-500 hover:-translate-y-2 hover:shadow-xl hover:shadow-slate-900/5 sm:rounded-3xl sm:p-8 ${theme.hover}`} style={{ transitionDelay: `${idx * 120}ms` }}>
+              <article
+                key={tab.label}
+                ref={(el) => { cardRefs.current[idx] = el }}
+                className={`reveal ${idx % 2 === 0 ? 'reveal-left' : 'reveal-right'} aios-card group relative flex h-full flex-col overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-6 transition-all duration-500 hover:-translate-y-2 hover:shadow-xl hover:shadow-slate-900/5 sm:rounded-3xl sm:p-8 ${theme.hover}`}
+                style={{ transitionDelay: `${idx * 120}ms` }}
+                data-aos={idx % 2 === 0 ? 'fade-right' : 'fade-left'}
+                data-aos-delay={idx * 120}
+              >
                 <div className={`mb-6 inline-flex h-14 w-14 items-center justify-center rounded-2xl ring-1 transition-transform duration-300 group-hover:scale-110 ${theme.accent}`}>{theme.icon}</div>
                 <h3 className="mb-3 font-display text-xl font-bold text-slate-900">{tab.label}</h3>
                 <p className="text-[0.92rem] leading-relaxed text-slate-500">{tab.text}</p>

@@ -14,6 +14,34 @@ function NavLink({ href, children, onClick, className, style }) {
 export default function SiteHeader() {
   const [open, setOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const [theme, setTheme] = useState('light')
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('tkm-theme')
+    if (savedTheme === 'dark' || savedTheme === 'light') {
+      setTheme(savedTheme)
+      document.documentElement.classList.toggle('theme-dark', savedTheme === 'dark')
+      return
+    }
+
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const initialTheme = prefersDark ? 'dark' : 'light'
+    setTheme(initialTheme)
+    document.documentElement.classList.toggle('theme-dark', prefersDark)
+  }, [])
+
+  useEffect(() => {
+    const id = window.setTimeout(() => setMounted(true), 30)
+    return () => window.clearTimeout(id)
+  }, [])
+
+  const toggleTheme = () => {
+    const nextTheme = theme === 'dark' ? 'light' : 'dark'
+    setTheme(nextTheme)
+    localStorage.setItem('tkm-theme', nextTheme)
+    document.documentElement.classList.toggle('theme-dark', nextTheme === 'dark')
+  }
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20)
@@ -37,7 +65,11 @@ export default function SiteHeader() {
       >
         <Container className="flex items-center justify-between gap-4 py-2 sm:py-2.5">
           {/* Logo */}
-          <Link className="group relative z-50 flex shrink-0 items-center gap-2 no-underline sm:gap-2.5" to="/">
+          <Link
+            className="group relative z-50 flex shrink-0 items-center gap-2 no-underline transition-all duration-700 sm:gap-2.5"
+            style={{ opacity: mounted ? 1 : 0, transform: mounted ? 'translateY(0)' : 'translateY(-10px)' }}
+            to="/"
+          >
             <img
               src="/images/tkm-logo.png"
               alt="TKM Logo"
@@ -55,11 +87,12 @@ export default function SiteHeader() {
 
           {/* Desktop nav */}
           <nav className="hidden xl:flex items-center gap-x-0.5" aria-label="Primary">
-            {NAV_LINKS.map((item) => (
+            {NAV_LINKS.map((item, idx) => (
               <NavLink
                 key={item.href}
                 href={item.href}
                 className="rounded-lg px-3 py-2 text-[0.82rem] font-medium text-tkm-200/80 no-underline transition-all duration-200 hover:bg-white/8 hover:text-white whitespace-nowrap"
+                style={{ opacity: mounted ? 1 : 0, transform: mounted ? 'translateY(0)' : 'translateY(-8px)', transition: `all 0.55s cubic-bezier(0.16,1,0.3,1) ${90 + idx * 45}ms` }}
               >
                 {item.label}
               </NavLink>
@@ -68,13 +101,36 @@ export default function SiteHeader() {
 
           {/* Desktop auth */}
           <div className="hidden xl:flex shrink-0 items-center gap-2.5">
-            {NAV_AUTH.map((item) =>
+            <button
+              type="button"
+              onClick={toggleTheme}
+              className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white/80 transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/15 hover:text-white"
+              aria-label={theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
+              title={theme === 'dark' ? 'Light theme' : 'Dark theme'}
+            >
+              {theme === 'dark' ? (
+                <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="12" cy="12" r="4" />
+                  <path strokeLinecap="round" d="M12 3v2.5M12 18.5V21M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M3 12h2.5M18.5 12H21M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" />
+                </svg>
+              ) : (
+                <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M21 14.6A9 9 0 1111.4 3a1 1 0 00-.36 1.95A7 7 0 1019.05 13a1 1 0 001.95.36z" />
+                </svg>
+              )}
+            </button>
+            {NAV_AUTH.map((item, idx) =>
               item.variant === 'cta' ? (
                 <NavLink
                   key={item.label}
                   href={item.href}
                   className="flex items-center rounded-full px-5 py-2 text-[0.82rem] font-bold text-white no-underline shadow-lg shadow-logo-orange/20 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-logo-orange/30"
-                  style={{ background: 'linear-gradient(135deg, #f7941d, #e8363a)' }}
+                  style={{
+                    background: 'linear-gradient(135deg, #f7941d, #e8363a)',
+                    opacity: mounted ? 1 : 0,
+                    transform: mounted ? 'translateY(0)' : 'translateY(-8px)',
+                    transition: `all 0.55s cubic-bezier(0.16,1,0.3,1) ${260 + idx * 60}ms`,
+                  }}
                 >
                   {item.label}
                 </NavLink>
@@ -83,6 +139,7 @@ export default function SiteHeader() {
                   key={item.label}
                   href={item.href}
                   className="px-3 py-2 text-[0.82rem] font-semibold text-tkm-200/80 no-underline transition-colors hover:text-white"
+                  style={{ opacity: mounted ? 1 : 0, transform: mounted ? 'translateY(0)' : 'translateY(-8px)', transition: `all 0.55s cubic-bezier(0.16,1,0.3,1) ${260 + idx * 60}ms` }}
                 >
                   {item.label}
                 </NavLink>
@@ -92,6 +149,24 @@ export default function SiteHeader() {
 
           {/* Mobile controls */}
           <div className="flex xl:hidden items-center gap-2 relative z-50">
+            <button
+              type="button"
+              onClick={toggleTheme}
+              className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white/80 transition-colors hover:bg-white/15 hover:text-white"
+              aria-label={theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
+              title={theme === 'dark' ? 'Light theme' : 'Dark theme'}
+            >
+              {theme === 'dark' ? (
+                <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="12" cy="12" r="4" />
+                  <path strokeLinecap="round" d="M12 3v2.5M12 18.5V21M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M3 12h2.5M18.5 12H21M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" />
+                </svg>
+              ) : (
+                <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M21 14.6A9 9 0 1111.4 3a1 1 0 00-.36 1.95A7 7 0 1019.05 13a1 1 0 001.95.36z" />
+                </svg>
+              )}
+            </button>
             <Link
               to="/admin-login"
               className="text-[0.8rem] font-bold text-accent-400 no-underline transition-colors hover:text-accent-300"

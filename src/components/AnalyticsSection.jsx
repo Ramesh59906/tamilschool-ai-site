@@ -39,7 +39,13 @@ function StatCard({ stat, index, icon }) {
     return () => obs.disconnect()
   }, [])
   return (
-    <div ref={ref} className="reveal aios-card group flex flex-col items-center rounded-2xl border border-white/8 bg-white/[0.03] p-6 text-center backdrop-blur-sm transition-all duration-500 hover:-translate-y-2 hover:border-tkm-400/20 hover:bg-white/[0.06] sm:rounded-3xl sm:p-10" style={{ transitionDelay: `${index * 120}ms` }}>
+    <div
+      ref={ref}
+      className={`reveal ${index % 2 === 0 ? 'reveal-left' : 'reveal-right'} aios-card group flex flex-col items-center rounded-2xl border border-white/8 bg-white/[0.03] p-6 text-center backdrop-blur-sm transition-all duration-500 hover:-translate-y-2 hover:border-tkm-400/20 hover:bg-white/[0.06] sm:rounded-3xl sm:p-10`}
+      style={{ transitionDelay: `${index * 120}ms` }}
+      data-aos={index % 2 === 0 ? 'fade-right' : 'fade-left'}
+      data-aos-delay={index * 120}
+    >
       <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-logo-blue/10 text-tkm-300 ring-1 ring-logo-blue/20 transition-transform duration-300 group-hover:scale-110">{icon}</div>
       <span className="mb-2 block font-display text-3xl font-extrabold text-white sm:text-4xl"><AnimatedCounter value={stat.value} suffix={stat.valueSuffix ?? ''} /></span>
       <span className="text-[0.85rem] font-bold uppercase tracking-widest text-tkm-300/60">{stat.label}</span>

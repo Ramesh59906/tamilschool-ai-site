@@ -2,11 +2,17 @@ import { useEffect, useMemo, useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
 import { getCurrentUser, getRoleLabel, isAuthed, logout } from '../auth/authStorage'
 
-function Card({ title, children }) {
+function Card({ title, children, isDark }) {
   return (
-    <div className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm shadow-slate-200/40">
-      <h3 className="mb-3 text-lg font-bold tracking-tight text-slate-900">{title}</h3>
-      <div className="text-sm leading-relaxed text-slate-600">{children}</div>
+    <div
+      className={`rounded-2xl border p-6 shadow-sm ${
+        isDark
+          ? 'border-slate-800 bg-slate-900 shadow-black/30'
+          : 'border-slate-200/80 bg-white shadow-slate-200/40'
+      }`}
+    >
+      <h3 className={`mb-3 text-lg font-bold tracking-tight ${isDark ? 'text-slate-100' : 'text-slate-900'}`}>{title}</h3>
+      <div className={`text-sm leading-relaxed ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>{children}</div>
     </div>
   )
 }
@@ -92,6 +98,7 @@ export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState('overview')
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [now, setNow] = useState(() => new Date())
+  const [dashboardTheme, setDashboardTheme] = useState(() => localStorage.getItem('dashboard-theme') || 'light')
 
   const tabsByRole = useMemo(() => {
     return {
@@ -121,6 +128,10 @@ export default function DashboardPage() {
     return () => clearInterval(id)
   }, [])
 
+  useEffect(() => {
+    localStorage.setItem('dashboard-theme', dashboardTheme)
+  }, [dashboardTheme])
+
   if (!isAuthed()) {
     return <Navigate to="/admin-login" replace />
   }
@@ -144,9 +155,14 @@ export default function DashboardPage() {
 
   const timeStr = now.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit', second: '2-digit' })
   const dateStr = now.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })
+  const isDark = dashboardTheme === 'dark'
+
+  function toggleDashboardTheme() {
+    setDashboardTheme((prev) => (prev === 'dark' ? 'light' : 'dark'))
+  }
 
   return (
-    <div className="flex min-h-svh bg-slate-100 font-sans text-slate-900">
+    <div className={`flex min-h-svh font-sans ${isDark ? 'bg-slate-950 text-slate-100' : 'bg-slate-100 text-slate-900'}`}>
       {sidebarOpen && (
         <button
           type="button"
@@ -207,11 +223,11 @@ export default function DashboardPage() {
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/90 shadow-sm backdrop-blur-md">
+        <header className={`sticky top-0 z-30 border-b shadow-sm backdrop-blur-md ${isDark ? 'border-slate-800 bg-slate-900/95' : 'border-slate-200/80 bg-white/90'}`}>
           <div className="flex h-14 items-center gap-3 px-4 sm:h-16 sm:px-6">
             <button
               type="button"
-              className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-700 shadow-sm md:hidden"
+              className={`flex h-10 w-10 items-center justify-center rounded-xl border shadow-sm md:hidden ${isDark ? 'border-slate-700 bg-slate-900 text-slate-200' : 'border-slate-200 bg-white text-slate-700'}`}
               aria-label="Open menu"
               onClick={() => setSidebarOpen(true)}
             >
@@ -221,8 +237,8 @@ export default function DashboardPage() {
             </button>
 
             <div className="min-w-0 flex-1">
-              <p className="text-[0.65rem] font-bold uppercase tracking-widest text-slate-400 sm:text-xs">Workspace</p>
-              <h1 className="truncate font-display text-lg font-extrabold text-slate-900 sm:text-xl">{activeLabel}</h1>
+              <p className={`text-[0.65rem] font-bold uppercase tracking-widest sm:text-xs ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>Workspace</p>
+              <h1 className={`truncate font-display text-lg font-extrabold sm:text-xl ${isDark ? 'text-white' : 'text-slate-900'}`}>{activeLabel}</h1>
             </div>
 
             <div className="hidden items-center gap-2 sm:flex">
@@ -231,16 +247,35 @@ export default function DashboardPage() {
             </div>
 
             <div className="hidden text-right sm:block">
-              <p className="font-mono text-sm font-bold tabular-nums text-slate-800">{timeStr}</p>
-              <p className="text-xs text-slate-500">{dateStr}</p>
+              <p className={`font-mono text-sm font-bold tabular-nums ${isDark ? 'text-slate-100' : 'text-slate-800'}`}>{timeStr}</p>
+              <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>{dateStr}</p>
             </div>
 
-            <div className="hidden h-9 w-px bg-slate-200 sm:block" />
+            <div className={`hidden h-9 w-px sm:block ${isDark ? 'bg-slate-700' : 'bg-slate-200'}`} />
+
+            <button
+              type="button"
+              onClick={toggleDashboardTheme}
+              className={`inline-flex h-9 w-9 items-center justify-center rounded-xl border transition-colors ${isDark ? 'border-slate-700 bg-slate-900 text-amber-300 hover:bg-slate-800' : 'border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100'}`}
+              aria-label={isDark ? 'Switch dashboard to light theme' : 'Switch dashboard to dark theme'}
+              title={isDark ? 'Light theme' : 'Dark theme'}
+            >
+              {isDark ? (
+                <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="12" cy="12" r="4" />
+                  <path strokeLinecap="round" d="M12 3v2.5M12 18.5V21M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M3 12h2.5M18.5 12H21M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" />
+                </svg>
+              ) : (
+                <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M21 14.6A9 9 0 1111.4 3a1 1 0 00-.36 1.95A7 7 0 1019.05 13a1 1 0 001.95.36z" />
+                </svg>
+              )}
+            </button>
 
             <button
               type="button"
               onClick={handleLogout}
-              className="hidden rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-bold text-slate-700 transition-colors hover:bg-slate-100 sm:inline-flex"
+              className={`hidden rounded-xl border px-3 py-2 text-sm font-bold transition-colors sm:inline-flex ${isDark ? 'border-slate-700 bg-slate-900 text-slate-200 hover:bg-slate-800' : 'border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100'}`}
             >
               Logout
             </button>
@@ -252,26 +287,26 @@ export default function DashboardPage() {
             <div className="mb-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
               {role === 'admin' && (
                 <>
-                  <StatPill label="Active teachers" value="24" sub="↑ 3 this week" accentClass={accent.stat} />
-                  <StatPill label="Students" value="412" sub="Across grades" accentClass={accent.stat} />
-                  <StatPill label="Sessions today" value="186" sub="Updated live" accentClass={accent.stat} />
-                  <StatPill label="Reports ready" value="12" sub="Export anytime" accentClass={accent.stat} />
+                  <StatPill label="Active teachers" value="24" sub="↑ 3 this week" accentClass={accent.stat} isDark={isDark} />
+                  <StatPill label="Students" value="412" sub="Across grades" accentClass={accent.stat} isDark={isDark} />
+                  <StatPill label="Sessions today" value="186" sub="Updated live" accentClass={accent.stat} isDark={isDark} />
+                  <StatPill label="Reports ready" value="12" sub="Export anytime" accentClass={accent.stat} isDark={isDark} />
                 </>
               )}
               {role === 'teacher' && (
                 <>
-                  <StatPill label="My classes" value="4" sub="This term" accentClass={accent.stat} />
-                  <StatPill label="Students" value="112" sub="Total roster" accentClass={accent.stat} />
-                  <StatPill label="Due reviews" value="8" sub="Needs attention" accentClass={accent.stat} />
-                  <StatPill label="Vocab sets" value="36" sub="Assigned" accentClass={accent.stat} />
+                  <StatPill label="My classes" value="4" sub="This term" accentClass={accent.stat} isDark={isDark} />
+                  <StatPill label="Students" value="112" sub="Total roster" accentClass={accent.stat} isDark={isDark} />
+                  <StatPill label="Due reviews" value="8" sub="Needs attention" accentClass={accent.stat} isDark={isDark} />
+                  <StatPill label="Vocab sets" value="36" sub="Assigned" accentClass={accent.stat} isDark={isDark} />
                 </>
               )}
               {role === 'parent' && (
                 <>
-                  <StatPill label="Children" value="2" sub="Linked profiles" accentClass={accent.stat} />
-                  <StatPill label="This week" value="4h 20m" sub="Learning time" accentClass={accent.stat} />
-                  <StatPill label="Streak" value="5 days" sub="Keep it up" accentClass={accent.stat} />
-                  <StatPill label="Achievements" value="7" sub="New this month" accentClass={accent.stat} />
+                  <StatPill label="Children" value="2" sub="Linked profiles" accentClass={accent.stat} isDark={isDark} />
+                  <StatPill label="This week" value="4h 20m" sub="Learning time" accentClass={accent.stat} isDark={isDark} />
+                  <StatPill label="Streak" value="5 days" sub="Keep it up" accentClass={accent.stat} isDark={isDark} />
+                  <StatPill label="Achievements" value="7" sub="New this month" accentClass={accent.stat} isDark={isDark} />
                 </>
               )}
             </div>
@@ -280,16 +315,16 @@ export default function DashboardPage() {
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
             {role === 'admin' && activeTab === 'overview' && (
               <>
-                <Card title="School overview">
+                <Card title="School overview" isDark={isDark}>
                   <p>
                     Manage overall learning setup and coordinate teacher access. (UI placeholder for now)
                   </p>
                 </Card>
-                <Card title="Quick actions">
+                <Card title="Quick actions" isDark={isDark}>
                   <div className="flex flex-col gap-2">
-                    <div className="rounded-xl bg-slate-50 px-4 py-3 font-bold text-slate-800">Invite teachers</div>
-                    <div className="rounded-xl bg-slate-50 px-4 py-3 font-bold text-slate-800">Open reports</div>
-                    <div className="rounded-xl bg-slate-50 px-4 py-3 font-bold text-slate-800">Configure safety policy</div>
+                    <div className={`rounded-xl px-4 py-3 font-bold ${isDark ? 'bg-slate-800 text-slate-100' : 'bg-slate-50 text-slate-800'}`}>Invite teachers</div>
+                    <div className={`rounded-xl px-4 py-3 font-bold ${isDark ? 'bg-slate-800 text-slate-100' : 'bg-slate-50 text-slate-800'}`}>Open reports</div>
+                    <div className={`rounded-xl px-4 py-3 font-bold ${isDark ? 'bg-slate-800 text-slate-100' : 'bg-slate-50 text-slate-800'}`}>Configure safety policy</div>
                   </div>
                 </Card>
               </>
@@ -297,10 +332,10 @@ export default function DashboardPage() {
 
             {role === 'admin' && activeTab === 'teachers' && (
               <>
-                <Card title="Teachers">
+                <Card title="Teachers" isDark={isDark}>
                   <p>Teacher list + assignments UI placeholder.</p>
                 </Card>
-                <Card title="Access control">
+                <Card title="Access control" isDark={isDark}>
                   <p>Add/remove teacher accounts and manage modules UI placeholder.</p>
                 </Card>
               </>
@@ -308,10 +343,10 @@ export default function DashboardPage() {
 
             {role === 'admin' && activeTab === 'reports' && (
               <>
-                <Card title="Reports & analytics">
+                <Card title="Reports & analytics" isDark={isDark}>
                   <p>Show session totals, mastery %, and vocabulary growth UI placeholder.</p>
                 </Card>
-                <Card title="Export (placeholder)">
+                <Card title="Export (placeholder)" isDark={isDark}>
                   <p>Add CSV/PDF exports once backend is connected.</p>
                 </Card>
               </>
@@ -319,10 +354,10 @@ export default function DashboardPage() {
 
             {role === 'admin' && activeTab === 'settings' && (
               <>
-                <Card title="Settings">
+                <Card title="Settings" isDark={isDark}>
                   <p>Branding and safety rule settings UI placeholder.</p>
                 </Card>
-                <Card title="Privacy">
+                <Card title="Privacy" isDark={isDark}>
                   <p>Privacy controls UI placeholder.</p>
                 </Card>
               </>
@@ -330,10 +365,10 @@ export default function DashboardPage() {
 
             {role === 'teacher' && activeTab === 'overview' && (
               <>
-                <Card title="Class overview">
+                <Card title="Class overview" isDark={isDark}>
                   <p>Track class progress and upcoming activities UI placeholder.</p>
                 </Card>
-                <Card title="Assignments (placeholder)">
+                <Card title="Assignments (placeholder)" isDark={isDark}>
                   <p>Assign lessons by grade and topic UI placeholder.</p>
                 </Card>
               </>
@@ -341,10 +376,10 @@ export default function DashboardPage() {
 
             {role === 'teacher' && activeTab === 'class' && (
               <>
-                <Card title="Class management">
+                <Card title="Class management" isDark={isDark}>
                   <p>Manage students, lessons, and time spent UI placeholder.</p>
                 </Card>
-                <Card title="Progress updates">
+                <Card title="Progress updates" isDark={isDark}>
                   <p>See which students need more practice UI placeholder.</p>
                 </Card>
               </>
@@ -352,10 +387,10 @@ export default function DashboardPage() {
 
             {role === 'teacher' && activeTab === 'vocabulary' && (
               <>
-                <Card title="Vocabulary tracking">
+                <Card title="Vocabulary tracking" isDark={isDark}>
                   <p>Monitor vocabulary growth and pronunciation confidence UI placeholder.</p>
                 </Card>
-                <Card title="Activities (placeholder)">
+                <Card title="Activities (placeholder)" isDark={isDark}>
                   <p>Generate practice sets based on mastery gaps UI placeholder.</p>
                 </Card>
               </>
@@ -363,10 +398,10 @@ export default function DashboardPage() {
 
             {role === 'teacher' && activeTab === 'reports' && (
               <>
-                <Card title="Reports">
+                <Card title="Reports" isDark={isDark}>
                   <p>View progress summaries for students UI placeholder.</p>
                 </Card>
-                <Card title="Download (placeholder)">
+                <Card title="Download (placeholder)" isDark={isDark}>
                   <p>Export reports UI placeholder.</p>
                 </Card>
               </>
@@ -374,10 +409,10 @@ export default function DashboardPage() {
 
             {role === 'parent' && activeTab === 'overview' && (
               <>
-                <Card title="Family overview">
+                <Card title="Family overview" isDark={isDark}>
                   <p>See learning progress and achievements UI placeholder.</p>
                 </Card>
-                <Card title="Learning safety">
+                <Card title="Learning safety" isDark={isDark}>
                   <p>Review safety & privacy features UI placeholder.</p>
                 </Card>
               </>
@@ -385,10 +420,10 @@ export default function DashboardPage() {
 
             {role === 'parent' && activeTab === 'child' && (
               <>
-                <Card title="My child">
+                <Card title="My child" isDark={isDark}>
                   <p>Select child profile and track learning sessions UI placeholder.</p>
                 </Card>
-                <Card title="Recommendations (placeholder)">
+                <Card title="Recommendations (placeholder)" isDark={isDark}>
                   <p>Suggest topics based on progress UI placeholder.</p>
                 </Card>
               </>
@@ -396,10 +431,10 @@ export default function DashboardPage() {
 
             {role === 'parent' && activeTab === 'progress' && (
               <>
-                <Card title="Progress">
+                <Card title="Progress" isDark={isDark}>
                   <p>View time spent, mastery %, and vocabulary improvements UI placeholder.</p>
                 </Card>
-                <Card title="Reports (placeholder)">
+                <Card title="Reports (placeholder)" isDark={isDark}>
                   <p>Generate shareable progress summaries UI placeholder.</p>
                 </Card>
               </>
@@ -407,10 +442,10 @@ export default function DashboardPage() {
 
             {role === 'parent' && activeTab === 'safety' && (
               <>
-                <Card title="Safety controls">
+                <Card title="Safety controls" isDark={isDark}>
                   <p>Confirm privacy settings UI placeholder.</p>
                 </Card>
-                <Card title="Policy link (placeholder)">
+                <Card title="Policy link (placeholder)" isDark={isDark}>
                   <p>Link to detailed safety policy pages UI placeholder.</p>
                 </Card>
               </>
@@ -422,14 +457,14 @@ export default function DashboardPage() {
   )
 }
 
-function StatPill({ label, value, sub, accentClass }) {
+function StatPill({ label, value, sub, accentClass, isDark }) {
   return (
-    <div className="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm">
-      <p className="text-[0.65rem] font-bold uppercase tracking-wider text-slate-500">{label}</p>
+    <div className={`rounded-2xl border p-4 shadow-sm ${isDark ? 'border-slate-800 bg-slate-900' : 'border-slate-200/80 bg-white'}`}>
+      <p className={`text-[0.65rem] font-bold uppercase tracking-wider ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>{label}</p>
       <p className={`mt-1 bg-gradient-to-br bg-clip-text font-display text-2xl font-extrabold text-transparent ${accentClass}`}>
         {value}
       </p>
-      <p className="mt-0.5 text-xs text-slate-500">{sub}</p>
+      <p className={`mt-0.5 text-xs ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>{sub}</p>
     </div>
   )
 }

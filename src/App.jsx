@@ -1,4 +1,6 @@
-import { Routes, Route } from 'react-router-dom'
+import { useEffect } from 'react'
+import { Routes, Route, useLocation } from 'react-router-dom'
+import AOS from 'aos'
 import ScrollToHash from './components/ScrollToHash'
 import HomePage from './pages/HomePage'
 import AdminLoginPage from './pages/AdminLoginPage'
@@ -12,6 +14,39 @@ import LearningProgressPage from './pages/LearningProgressPage'
 import PlaceholderModulePage from './pages/PlaceholderModulePage'
 
 export default function App() {
+  const location = useLocation()
+
+  useEffect(() => {
+    AOS.init({
+      duration: 1050,
+      easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
+      once: true,
+      offset: 90,
+      mirror: false,
+    })
+  }, [])
+
+  useEffect(() => {
+    AOS.refresh()
+  }, [location.pathname])
+
+  useEffect(() => {
+    if (location.pathname.startsWith('/dashboard')) {
+      document.documentElement.classList.remove('theme-dark')
+      return
+    }
+
+    const savedTheme = localStorage.getItem('tkm-theme')
+    if (savedTheme === 'dark' || savedTheme === 'light') {
+      document.documentElement.classList.toggle('theme-dark', savedTheme === 'dark')
+      return
+    }
+
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+    document.documentElement.classList.toggle('theme-dark', prefersDark)
+    localStorage.setItem('tkm-theme', prefersDark ? 'dark' : 'light')
+  }, [location.pathname])
+
   return (
     <>
       <ScrollToHash />

@@ -28,12 +28,21 @@ function CheckItem({ children, delay }) {
 export default function TeachersSection() {
   const headRef = useRef(null)
   const cardRef = useRef(null)
+  const ctaRef = useRef(null)
+
   useEffect(() => {
-    [headRef.current, cardRef.current].forEach((el) => {
-      if (!el) return
-      const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) { el.classList.add('visible'); obs.unobserve(el) } }, { threshold: 0.15 })
-      obs.observe(el)
-    })
+    const obs = new IntersectionObserver(
+      (entries) => entries.forEach((e) => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible')
+          obs.unobserve(e.target)
+        }
+      }),
+      { threshold: 0.15 },
+    )
+
+    ;[headRef.current, cardRef.current, ctaRef.current].filter(Boolean).forEach((el) => obs.observe(el))
+    return () => obs.disconnect()
   }, [])
 
   return (
@@ -46,11 +55,15 @@ export default function TeachersSection() {
           <h2 id="teachers-heading" className="mb-3 font-display text-2xl font-extrabold tracking-tight text-slate-900 sm:mb-4 sm:text-3xl md:text-4xl">{TEACHERS.title}</h2>
           <p className="text-base text-slate-500 sm:text-lg">{TEACHERS.subtitle}</p>
         </div>
-        <div ref={cardRef} className="reveal aios-card mx-auto max-w-3xl rounded-2xl border border-slate-200/80 bg-white p-6 shadow-xl shadow-slate-900/5 sm:rounded-[2rem] sm:p-10 md:p-14">
+        <div
+          ref={cardRef}
+          className="reveal reveal-right aios-card mx-auto max-w-3xl rounded-2xl border border-slate-200/80 bg-white p-6 shadow-xl shadow-slate-900/5 sm:rounded-[2rem] sm:p-10 md:p-14"
+          data-aos="fade-left"
+        >
           <ul className="mb-10 grid grid-cols-1 gap-x-10 gap-y-5 p-0 m-0 list-none sm:grid-cols-2">
             {TEACHERS.bullets.map((b, idx) => <CheckItem key={b} delay={`${idx * 100 + 200}ms`}>{b}</CheckItem>)}
           </ul>
-          <div className="flex justify-center border-t border-slate-100 pt-8">
+          <div ref={ctaRef} className="reveal flex justify-center border-t border-slate-100 pt-8" style={{ transitionDelay: '220ms' }}>
             <Link to="/register" className="group inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-tkm-600 to-tkm-700 px-8 py-3.5 font-display text-[0.9rem] font-bold text-white shadow-lg shadow-tkm-600/20 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl">
               <span>{TEACHERS.cta}</span>
               <svg className="h-4 w-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>

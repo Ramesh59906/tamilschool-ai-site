@@ -2,10 +2,12 @@ import './auth-animations.css'
 
 export default function AuthLayout({ heading, subheading, children }) {
   return (
-    <main className="min-h-svh bg-surface font-sans text-slate-800">
+    <main className="auth-shell min-h-svh bg-surface font-sans text-slate-800">
       <div className="grid min-h-svh lg:grid-cols-2">
         <section className="relative flex items-center justify-center p-6 sm:p-10 lg:p-16">
-          <div className="w-full max-w-md">{children}</div>
+          <div className="auth-form-card w-full max-w-md rounded-3xl border border-slate-200/70 bg-white/95 p-6 shadow-[0_24px_60px_rgba(15,23,42,0.08)] backdrop-blur-xl sm:p-8">
+            {children}
+          </div>
         </section>
 
         <section className="relative hidden overflow-hidden bg-tkm-950 lg:flex lg:flex-col lg:items-center lg:justify-center">
