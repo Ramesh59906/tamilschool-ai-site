@@ -1,4 +1,58 @@
+import { useMemo } from 'react'
+
+// Playful School and child themed SVG icons
+const Star = ({ className, style }) => (
+  <svg viewBox="0 0 24 24" fill="currentColor" className={className} style={style}>
+    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+  </svg>
+);
+
+const Triangle = ({ className, style }) => (
+  <svg viewBox="0 0 24 24" fill="currentColor" className={className} style={style}>
+    <path d="M12 2L2 22h20L12 2z" />
+  </svg>
+);
+
+const Circle = ({ className, style }) => (
+  <svg viewBox="0 0 24 24" fill="currentColor" className={className} style={style}>
+    <circle cx="12" cy="12" r="10" />
+  </svg>
+);
+
+const Square = ({ className, style }) => (
+  <svg viewBox="0 0 24 24" fill="currentColor" className={className} style={style}>
+    <rect x="3" y="3" width="18" height="18" rx="2" />
+  </svg>
+);
+
 export default function AnimatedBackground() {
+  // Generate random floating items
+  const floatingItems = useMemo(() => {
+    const shapes = [Star, Triangle, Circle, Square]
+    const colors = ['text-yellow-300', 'text-pink-400', 'text-cyan-400', 'text-emerald-400', 'text-orange-400']
+
+    return Array.from({ length: 30 }).map((_, i) => {
+      const ShapeComponent = shapes[i % shapes.length]
+      const colorClass = colors[i % colors.length]
+      const seed = (Math.sin((i + 1) * 999) * 10000) % 1
+      const seed2 = (Math.sin((i + 7) * 1337) * 10000) % 1
+      const seed3 = (Math.sin((i + 11) * 4242) * 10000) % 1
+      const seed4 = (Math.sin((i + 19) * 2027) * 10000) % 1
+      const seed5 = (Math.sin((i + 23) * 8081) * 10000) % 1
+
+      return {
+        id: i,
+        Component: ShapeComponent,
+        color: colorClass,
+        left: `${Math.abs(seed) * 100}%`,
+        animationDuration: `${Math.abs(seed2) * 15 + 15}s`, // Between 15s and 30s
+        animationDelay: `-${Math.abs(seed3) * 30}s`, // Staggered start times
+        size: `${Math.abs(seed4) * 2 + 1.2}rem`, // 1.2rem to 3.2rem size
+        rotation: Math.abs(seed5) * 360,
+      }
+    })
+  }, [])
+
   return (
     <div className="absolute inset-0 overflow-hidden bg-tkm-950">
       {/* Rainbow-inspired gradient mesh from logo */}

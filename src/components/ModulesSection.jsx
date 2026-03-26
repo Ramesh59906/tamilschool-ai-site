@@ -82,7 +82,45 @@ export default function ModulesSection() {
         </div>
         <div className="grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2">
           {CORE_MODULES.modules.map((m, idx) => (
-            <ModuleCard key={m.title} module={m} index={idx} theme={CARD_THEMES[idx]} />
+             <div 
+               key={m.title}
+               className="animate-[slideUpFade_0.8s_ease-out_both]"
+               style={{ animationDelay: `${idx * 150}ms` }}
+             >
+                <article
+                  className="group relative h-full overflow-hidden rounded-[28px] border border-white/60 bg-white/70 p-8 shadow-[0_8px_30px_rgba(0,0,0,0.04)] backdrop-blur-xl transition-all duration-500 hover:-translate-y-2 hover:bg-white hover:shadow-[0_20px_40px_rgba(99,102,241,0.12)] hover:border-indigo-200"
+                >
+                  {/* Subtle inner hover glow */}
+                  <div className="absolute -inset-0 rounded-[28px] bg-gradient-to-br from-indigo-500/5 to-fuchsia-500/5 opacity-0 transition-opacity duration-500 group-hover:opacity-100 pointer-events-none"></div>
+
+                  {/* Icon Box */}
+                  <div className="relative z-10 mb-6 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-slate-50 to-indigo-50/50 text-indigo-600 shadow-inner ring-1 ring-indigo-100/60 transition-transform duration-500 group-hover:scale-110 group-hover:-rotate-[8deg] group-hover:bg-gradient-to-br group-hover:from-indigo-100 group-hover:to-purple-100">
+                    <div className="opacity-90 group-hover:opacity-100 transition-opacity">
+                      <ModuleIcon type={m.icon} />
+                    </div>
+                  </div>
+
+                  <h3 className="relative z-10 mb-3 text-[1.35rem] font-bold text-slate-800 transition-colors duration-300 group-hover:text-indigo-600">
+                    {m.title}
+                  </h3>
+                  <p className="relative z-10 mb-6 text-[0.98rem] leading-relaxed text-slate-500">
+                    {m.subtitle}
+                  </p>
+                  
+                  <ul className="relative z-10 m-0 flex flex-col gap-3.5 p-0">
+                    {m.items.map((item) => (
+                      <li key={item} className="flex items-start gap-3.5 text-[0.95rem] font-medium text-slate-600 transition-all duration-300 group-hover:text-slate-700">
+                        <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-teal-400 to-emerald-500 text-white shadow-sm shadow-emerald-500/20 group-hover:scale-110 transition-transform duration-300">
+                          <svg className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
+                            <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" />
+                          </svg>
+                        </div>
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </article>
+             </div>
           ))}
         </div>
         <div className="mt-10 text-center sm:mt-14">

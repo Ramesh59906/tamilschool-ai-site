@@ -2,6 +2,20 @@ import { useEffect, useRef } from 'react'
 import { TESTIMONIALS } from '../data/landingContent'
 import Container from './Container'
 
+const nightSkyIcons = [
+  { icon: '✨', left: '15%', delay: '0s', duration: '15s', size: '2rem', color: 'text-indigo-300' },
+  { icon: '🌟', left: '35%', delay: '-5s', duration: '20s', size: '1.5rem', color: 'text-sky-300' },
+  { icon: '⭐', left: '60%', delay: '-10s', duration: '25s', size: '2.5rem', color: 'text-amber-200' },
+  { icon: '✨', left: '85%', delay: '-2s', duration: '18s', size: '1.8rem', color: 'text-teal-300' },
+  { icon: '🌟', left: '20%', delay: '-8s', duration: '22s', size: '2.2rem', color: 'text-purple-300' },
+  { icon: '⭐', left: '75%', delay: '-15s', duration: '19s', size: '1.5rem', color: 'text-rose-200' },
+];
+
+const nightSkyStars = nightSkyIcons.map((item, i) => {
+  const seed = (Math.sin((i + 1) * 1337) * 10000) % 1
+  return { ...item, top: `${Math.abs(seed) * 80}%` }
+})
+
 export default function TestimonialsSection() {
   const headRef = useRef(null)
   useEffect(() => {
@@ -15,9 +29,40 @@ export default function TestimonialsSection() {
   const items = [...TESTIMONIALS.items, ...TESTIMONIALS.items, ...TESTIMONIALS.items, ...TESTIMONIALS.items]
 
   return (
-    <section className="relative overflow-hidden bg-tkm-950 py-14 sm:py-20 md:py-28" id="testimonials" aria-labelledby="testimonials-heading">
-      <div className="absolute -left-[20%] top-0 h-[500px] w-[500px] rounded-full bg-logo-blue/12 blur-[140px]" aria-hidden="true" />
-      <div className="absolute -right-[15%] bottom-0 h-[400px] w-[400px] rounded-full bg-logo-orange/6 blur-[120px]" aria-hidden="true" />
+    <section
+      className="relative overflow-hidden bg-slate-950 py-20 md:py-[6.5rem]"
+      id="testimonials"
+      aria-labelledby="testimonials-heading"
+    >
+      {/* Deep Magical Night Sky Background */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
+        {/* Soft giant orbs */}
+        <div className="absolute -top-[30%] -left-[10%] w-[70%] h-[70%] rounded-full bg-indigo-600/20 blur-[130px] animate-[blob_18s_infinite_ease-in-out]"></div>
+        <div className="absolute top-[20%] -right-[20%] w-[60%] h-[60%] rounded-full bg-teal-600/15 blur-[140px] animate-[blob_20s_infinite_ease-in-out]" style={{ animationDelay: '5s' }}></div>
+        <div className="absolute -bottom-[20%] left-[15%] w-[65%] h-[65%] rounded-full bg-purple-600/15 blur-[120px] animate-[blob_25s_infinite_ease-in-out]" style={{ animationDelay: '10s' }}></div>
+
+        {/* Floating Stars */}
+        {nightSkyStars.map((item, i) => (
+          <div 
+             key={i} 
+             className={`absolute animate-[floating_8s_ease-in-out_infinite] opacity-40 select-none ${item.color}`}
+             style={{
+               left: item.left,
+               top: item.top,
+               animationDuration: item.duration,
+               animationDelay: item.delay,
+               fontSize: item.size
+             }}
+             aria-hidden="true"
+          >
+             {item.icon}
+          </div>
+        ))}
+        
+        {/* Animated dotted grid */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.05)_1px,transparent_0)] bg-[length:32px_32px] [mask-image:radial-gradient(ellipse_70%_60%_at_50%_40%,#000_80%,transparent_100%)] opacity-70"></div>
+      </div>
+
       <div className="relative z-10">
         <Container>
           <div ref={headRef} className="reveal mb-8 text-center sm:mb-14">

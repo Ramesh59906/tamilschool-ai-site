@@ -5,6 +5,11 @@ import AdminLoginPage from './pages/AdminLoginPage'
 import SignUpPage from './pages/SignUpPage'
 import ForgotPasswordPage from './pages/ForgotPasswordPage'
 import DashboardPage from './pages/DashboardPage'
+import UserLoginPage from './pages/UserLoginPage'
+import StudentHomePage from './pages/StudentHomePage'
+import ConversationModulePage from './pages/ConversationModulePage'
+import LearningProgressPage from './pages/LearningProgressPage'
+import PlaceholderModulePage from './pages/PlaceholderModulePage'
 
 export default function App() {
   return (
@@ -16,6 +21,11 @@ export default function App() {
         <Route path="/register" element={<SignUpPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/login" element={<UserLoginPage />} />
+        <Route path="/learn" element={<StudentHomePage />} />
+        <Route path="/learn/conversation" element={<ConversationModulePage />} />
+        <Route path="/learn/progress" element={<LearningProgressPage />} />
+        <Route path="/learn/:moduleId" element={<PlaceholderModulePage />} />
       </Routes>
     </>
   )

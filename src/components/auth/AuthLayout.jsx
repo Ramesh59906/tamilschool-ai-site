@@ -36,6 +36,29 @@ export default function AuthLayout({ heading, subheading, children }) {
           ].map((s, i) => (
             <div key={i} className={`auth-float absolute ${s.pos} ${s.size} rotate-45 rounded-md border-2 ${s.color}`} style={{ animationDelay: s.delay }} aria-hidden="true" />
           ))}
+
+          <div className="relative z-10 mb-2 text-center">
+            <p className="font-tamil text-base font-semibold text-blue-700" lang="ta">
+              தமிழ் கற்றல் மையம்
+            </p>
+            <h2 className="mt-1 text-4xl font-extrabold leading-tight text-slate-800">
+              {heading}
+            </h2>
+            <p className="mt-2 text-sm text-slate-500">{subheading}</p>
+          </div>
+
+          <div className="relative z-10 mt-2">
+            <img
+              src="/images/student-login-illustration.png"
+              alt="Student illustration"
+              className="auth-illus-float h-80 w-auto"
+              style={{
+                mixBlendMode: 'multiply',
+                WebkitMaskImage: 'radial-gradient(ellipse 55% 65% at 50% 50%, black 60%, transparent 100%)',
+                maskImage: 'radial-gradient(ellipse 55% 65% at 50% 50%, black 60%, transparent 100%)',
+              }}
+            />
+          </div>
         </section>
       </div>
     </main>
