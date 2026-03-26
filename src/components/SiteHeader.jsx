@@ -104,7 +104,7 @@ export default function SiteHeader() {
           <div className="flex xl:hidden items-center z-50 relative ml-auto">
             {/* Show login button for admin access on mobile, hide the 'request access' to save space */}
             <a
-                  href="/admin-login"
+                  href="#/login"
                   className="mr-3 text-[0.85rem] font-bold text-sky-400 no-underline transition-colors hover:text-sky-300"
             >
               Log in
