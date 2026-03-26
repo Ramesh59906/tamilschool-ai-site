@@ -100,10 +100,10 @@ export default function UserLoginPage() {
           />
         </div>
 
-        <div className="flex items-center justify-between text-sm text-slate-500">
+        {/* <div className="flex items-center justify-between text-sm text-slate-500">
           <span className="font-semibold">Role: {getUserRoleLabel(role)}</span>
           <span className="font-semibold">Demo accounts</span>
-        </div>
+        </div> */}
 
         {error && <div className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">{error}</div>}
 

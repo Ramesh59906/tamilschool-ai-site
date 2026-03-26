@@ -125,7 +125,7 @@ export default function ModulesSection() {
         </div>
         <div className="mt-10 text-center sm:mt-14">
           <Link
-            to="/register"
+            to="/login?mode=user"
             className="group inline-flex items-center gap-2 rounded-full bg-tkm-950 px-8 py-4 font-display text-[0.95rem] font-bold text-white shadow-lg shadow-tkm-950/20 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl"
           >
             <span>{CORE_MODULES.cta}</span>

@@ -41,13 +41,13 @@ export default function AuthLayout({ heading, subheading, children }) {
             <p className="font-tamil text-base font-semibold text-blue-700" lang="ta">
               தமிழ் கற்றல் மையம்
             </p>
-            <h2 className="mt-1 text-4xl font-extrabold leading-tight text-slate-800">
+            {/* <h2 className="mt-1 text-4xl font-extrabold leading-tight text-slate-800">
               {heading}
-            </h2>
-            <p className="mt-2 text-sm text-slate-500">{subheading}</p>
+            </h2> */}
+            {/* <p className="mt-2 text-sm text-slate-500">{subheading}</p> */}
           </div>
 
-          <div className="relative z-10 mt-2">
+          {/* <div className="relative z-10 mt-2">
             <img
               src="/images/student-login-illustration.png"
               alt="Student illustration"
@@ -58,7 +58,7 @@ export default function AuthLayout({ heading, subheading, children }) {
                 maskImage: 'radial-gradient(ellipse 55% 65% at 50% 50%, black 60%, transparent 100%)',
               }}
             />
-          </div>
+          </div> */}
         </section>
       </div>
     </main>
