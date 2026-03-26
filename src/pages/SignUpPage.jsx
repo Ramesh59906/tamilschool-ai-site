@@ -1,33 +1,123 @@
-import { Link } from 'react-router-dom'
+import { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import AuthLayout from '../components/auth/AuthLayout'
+import { signUp } from '../auth/authStorage'
+
+const ROLE_OPTIONS = [
+  { id: 'parent', label: 'Parent' },
+  { id: 'teacher', label: 'Teacher' },
+  { id: 'admin', label: 'Admin' },
+]
 
 export default function SignUpPage() {
+  const navigate = useNavigate()
+  const [role, setRole] = useState('parent')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [error, setError] = useState('')
+
+  function handleSubmit(e) {
+    e.preventDefault()
+    setError('')
+
+    try {
+      if (password !== confirmPassword) {
+        throw new Error('Passwords do not match.')
+      }
+      signUp({ email, password, role })
+      navigate('/dashboard')
+    } catch (err) {
+      setError(err?.message || 'Sign up failed.')
+    }
+  }
+
   return (
     <AuthLayout heading="Join Us!" subheading="Start your Tamil learning journey today">
       <h1 className="font-display text-3xl font-extrabold tracking-tight text-slate-900">Sign up</h1>
       <p className="mt-1 text-sm text-slate-500">Create an account to get started</p>
 
-      <form className="mt-8 space-y-5" onSubmit={(e) => e.preventDefault()}>
+      <form className="mt-8 space-y-5" onSubmit={handleSubmit}>
         <div>
-          <label htmlFor="role" className="mb-1.5 block text-sm font-semibold text-slate-700">I am a</label>
-          <select id="role" name="role" className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 outline-none transition-all duration-200 focus:border-tkm-500 focus:ring-4 focus:ring-tkm-500/10">
-            <option>Parent</option><option>Teacher</option><option>Student</option>
+          <label htmlFor="role" className="mb-1.5 block text-sm font-semibold text-slate-700">
+            I am a
+          </label>
+          <select
+            id="role"
+            name="role"
+            value={role}
+            onChange={(e) => setRole(e.target.value)}
+            className="w-full rounded-xl border border-blue-100 bg-white px-4 py-3 text-base font-semibold text-slate-700 outline-none transition focus:border-blue-400"
+          >
+            {ROLE_OPTIONS.map((r) => (
+              <option key={r.id} value={r.id}>
+                {r.label}
+              </option>
+            ))}
           </select>
         </div>
         <div>
-          <label htmlFor="email" className="mb-1.5 block text-sm font-semibold text-slate-700">Email</label>
-          <input id="email" name="email" type="email" autoComplete="email" required placeholder="you@example.com" className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 outline-none transition-all duration-200 focus:border-tkm-500 focus:ring-4 focus:ring-tkm-500/10" />
+          <label htmlFor="email" className="mb-1.5 block text-sm font-semibold text-slate-700">
+            Email
+          </label>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            autoComplete="email"
+            placeholder="you@example.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            className="w-full rounded-xl border border-blue-100 bg-white px-4 py-3 text-base text-slate-700 outline-none transition focus:border-blue-400"
+          />
         </div>
         <div>
-          <label htmlFor="password" className="mb-1.5 block text-sm font-semibold text-slate-700">Password</label>
-          <input id="password" name="password" type="password" autoComplete="new-password" required placeholder="Create a strong password" className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 outline-none transition-all duration-200 focus:border-tkm-500 focus:ring-4 focus:ring-tkm-500/10" />
-          <p className="mt-1 text-xs text-slate-400">At least 8 characters with uppercase, lowercase, and number</p>
+          <label htmlFor="password" className="mb-1.5 block text-sm font-semibold text-slate-700">
+            Password
+          </label>
+          <input
+            id="password"
+            name="password"
+            type="password"
+            autoComplete="new-password"
+            placeholder="Create a strong password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            className="w-full rounded-xl border border-cyan-100 bg-white px-4 py-3 text-base text-slate-700 outline-none transition focus:border-cyan-500"
+          />
+          <p className="mt-1 text-xs text-slate-400">
+            Must be at least 8 characters with uppercase, lowercase, and number
+          </p>
         </div>
         <div>
-          <label htmlFor="confirm-password" className="mb-1.5 block text-sm font-semibold text-slate-700">Confirm Password</label>
-          <input id="confirm-password" name="confirm-password" type="password" autoComplete="new-password" required placeholder="Confirm your password" className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 outline-none transition-all duration-200 focus:border-tkm-500 focus:ring-4 focus:ring-tkm-500/10" />
+          <label htmlFor="confirm-password" className="mb-1.5 block text-sm font-semibold text-slate-700">
+            Confirm Password
+          </label>
+          <input
+            id="confirm-password"
+            name="confirm-password"
+            type="password"
+            autoComplete="new-password"
+            placeholder="Confirm your password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            required
+            className="w-full rounded-xl border border-cyan-100 bg-white px-4 py-3 text-base text-slate-700 outline-none transition focus:border-cyan-500"
+          />
         </div>
-        <button type="submit" className="w-full rounded-xl bg-tkm-950 px-4 py-3.5 font-display text-sm font-bold text-white shadow-lg shadow-tkm-950/15 transition-all duration-300 hover:-translate-y-0.5 hover:bg-tkm-900">Create Account</button>
+
+        {error && (
+          <div className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">{error}</div>
+        )}
+
+        <button
+          type="submit"
+          className="mt-2 w-full rounded-full bg-gradient-to-r from-blue-600 via-cyan-500 to-blue-700 px-4 py-3 text-base font-bold text-white shadow-[0_12px_28px_rgba(37,99,235,0.35)] transition hover:from-blue-500 hover:via-cyan-400 hover:to-blue-600"
+        >
+          Create Account
+        </button>
       </form>
 
       <p className="mt-8 text-center text-sm text-slate-500">
